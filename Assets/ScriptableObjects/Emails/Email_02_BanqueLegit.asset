@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac514606b11f5e549818b2efa89c2ac7, type: 3}
+  m_Name: Email_02_BanqueLegit
+  m_EditorClassIdentifier: Assembly-CSharp::EmailData
+  expediteurNom: Service Client BNP
+  expediteurEmail: service-client@bnpparibas.fr
+  objet: "Nouveau relev\xE9 disponible"
+  corpsDuMessage: "Bonjour,\n\nVotre relev\xE9 bancaire de d\xE9cembre est disponible
+    dans votre espace client.\n\nCordialement,\nService Client BNP Paribas"
+  estFrauduleux: 0
+  explicationErreur: "ERREUR !\n\nCet email \xE9tait L\xC9GITIME.\n\nL'adresse email
+    est correcte (@bnpparibas.fr) et le message ne demande rien de suspect."
+  pointsSiCorrect: 10
+  degatsIntegrite: 20
