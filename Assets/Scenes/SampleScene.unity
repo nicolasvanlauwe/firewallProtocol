@@ -1203,6 +1203,8 @@ GameObject:
   - component: {fileID: 362173049}
   - component: {fileID: 362173051}
   - component: {fileID: 362173050}
+  - component: {fileID: 362173053}
+  - component: {fileID: 362173052}
   m_Layer: 5
   m_Name: Victory_Panel
   m_TagString: Untagged
@@ -1271,6 +1273,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 362173048}
   m_CullTransparentMesh: 1
+--- !u!114 &362173052
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 362173048}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 876d51d39aa1d51438388330cf0eb3f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EndScreenAnimator
+  panelCanvasGroup: {fileID: 362173053}
+  panelRect: {fileID: 362173049}
+  titleText: {fileID: 211046551}
+  messageText: {fileID: 490788014}
+  scoreText: {fileID: 93322957}
+  replayButton: {fileID: 1761056457}
+  buttonRect: {fileID: 1761056456}
+  isGameOver: 0
+  animationDuration: 0.5
+  gameOverColor: {r: 0.9, g: 0.2, b: 0.2, a: 1}
+  victoryColor: {r: 0.2, g: 0.8, b: 0.3, a: 1}
+--- !u!225 &362173053
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 362173048}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &490788011
 GameObject:
   m_ObjectHideFlags: 0
@@ -1593,13 +1630,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1bf24d3a3ecaec499079d6774c6a9ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GlitchEffect
-  glitchContainer: {fileID: 0}
+  parentCanvas: {fileID: 1660352507}
   numberOfBands: 15
-  bandHeight: 30
-  effectDuration: 0.7
-  glitchColor1: {r: 1, g: 0, b: 0.5, a: 0.7}
-  glitchColor2: {r: 0, g: 1, b: 0.8, a: 0.7}
-  glitchColor3: {r: 1, g: 0.2, b: 0.2, a: 0.6}
+  intenseDuration: 1.5
+  lightDuration: 0.4
+  glitchCyan: {r: 0, g: 1, b: 1, a: 0.8}
+  glitchMagenta: {r: 1, g: 0, b: 0.8, a: 0.8}
+  glitchGreen: {r: 0, g: 1, b: 0.3, a: 0.8}
+  glitchRed: {r: 1, g: 0.1, b: 0.1, a: 0.7}
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -2767,6 +2805,8 @@ GameObject:
   - component: {fileID: 1090764708}
   - component: {fileID: 1090764710}
   - component: {fileID: 1090764709}
+  - component: {fileID: 1090764712}
+  - component: {fileID: 1090764711}
   m_Layer: 5
   m_Name: GameOver_Panel
   m_TagString: Untagged
@@ -2835,6 +2875,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1090764707}
   m_CullTransparentMesh: 1
+--- !u!114 &1090764711
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1090764707}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 876d51d39aa1d51438388330cf0eb3f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EndScreenAnimator
+  panelCanvasGroup: {fileID: 1090764712}
+  panelRect: {fileID: 1090764708}
+  titleText: {fileID: 169048776}
+  messageText: {fileID: 988411266}
+  scoreText: {fileID: 1080695331}
+  replayButton: {fileID: 973674145}
+  buttonRect: {fileID: 973674144}
+  isGameOver: 1
+  animationDuration: 0.5
+  gameOverColor: {r: 0.9, g: 0.2, b: 0.2, a: 1}
+  victoryColor: {r: 0.2, g: 0.8, b: 0.3, a: 1}
+--- !u!225 &1090764712
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1090764707}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1174903707
 GameObject:
   m_ObjectHideFlags: 0
@@ -3529,6 +3604,7 @@ RectTransform:
   - {fileID: 362173049}
   - {fileID: 266028923}
   - {fileID: 573263125}
+  - {fileID: 2096205538}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -3710,8 +3786,6 @@ MonoBehaviour:
   approveColor: {r: 0.2, g: 0.9, b: 0.3, a: 1}
   rejectColor: {r: 0.9, g: 0.2, b: 0.2, a: 1}
   fireworksEffect: {fileID: 0}
-  glitchEffect: {fileID: 0}
-  effectProbability: 0.4
   enableVibration: 1
 --- !u!1 &1759832321
 GameObject:
@@ -4715,13 +4789,7 @@ MonoBehaviour:
   emailsRestantsText: {fileID: 2034329423}
   feedbackPopup: {fileID: 1455056900}
   gameOverPanel: {fileID: 1090764707}
-  gameOverTitle: {fileID: 169048776}
-  gameOverMessage: {fileID: 988411266}
-  gameOverScore: {fileID: 1080695331}
   victoryPanel: {fileID: 362173048}
-  victoryTitle: {fileID: 211046551}
-  victoryMessage: {fileID: 490788014}
-  victoryScore: {fileID: 93322957}
 --- !u!4 &2009428743
 Transform:
   m_ObjectHideFlags: 0
@@ -5360,6 +5428,65 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2050084258}
   m_CullTransparentMesh: 1
+--- !u!1 &2096205537
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2096205538}
+  - component: {fileID: 2096205539}
+  m_Layer: 5
+  m_Name: ConfettiEffect
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2096205538
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2096205537}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1660352508}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2096205539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2096205537}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 451031fc9fece1f4286733b699e094df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ConfettiEffect
+  parentCanvas: {fileID: 1660352507}
+  numberOfConfetti: 40
+  duration: 2.5
+  confettiColors:
+  - {r: 1, g: 0.84, b: 0, a: 1}
+  - {r: 0.2, g: 1, b: 0.4, a: 1}
+  - {r: 0, g: 0.8, b: 1, a: 1}
+  - {r: 1, g: 0.4, b: 0.7, a: 1}
+  - {r: 1, g: 1, b: 1, a: 1}
+  - {r: 1, g: 0.5, b: 0, a: 1}
+  - {r: 0.6, g: 0.4, b: 1, a: 1}
 --- !u!1 &2142538440
 GameObject:
   m_ObjectHideFlags: 0

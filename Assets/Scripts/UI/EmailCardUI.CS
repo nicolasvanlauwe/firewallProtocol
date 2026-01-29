@@ -33,13 +33,6 @@ public class EmailCardUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     [Header("✨ Effets Spéciaux")]
     [Tooltip("Système de particules pour les feux d'artifice")]
     public ParticleSystem fireworksEffect;
-    
-    [Tooltip("Système de particules pour l'effet glitch")]
-    public ParticleSystem glitchEffect;
-    
-    [Tooltip("Probabilité d'effet spécial (0-1)")]
-    [Range(0f, 1f)]
-    public float effectProbability = 0.4f;
 
     [Header("📳 Vibration (Mobile)")]
     [Tooltip("Activer les vibrations sur mobile")]
@@ -66,10 +59,9 @@ public class EmailCardUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         {
             cardOutline.gameObject.SetActive(false);
         }
-        
+
         // Désactive les particules au démarrage
         if (fireworksEffect != null) fireworksEffect.Stop();
-        if (glitchEffect != null) glitchEffect.Stop();
     }
 
     /// <summary>
@@ -77,8 +69,8 @@ public class EmailCardUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     /// </summary>
     public void AfficherEmail(EmailData email)
     {
-        expediteurText.text = email.expediteurNom + " <" + email.expediteurEmail + ">";
-        objetText.text = email.objet;
+        expediteurText.text = "De: " + email.expediteurNom + " <" + email.expediteurEmail + ">";
+        objetText.text = "Objet: " + email.objet;
         corpsText.text = email.corpsDuMessage;
 
         rectTransform.anchoredPosition = originalPosition;
@@ -159,16 +151,17 @@ public class EmailCardUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
             // Informe le GameManager et récupère si c'était correct
             bool wasCorrect = GameManager.Instance.TraiterDecisionAvecRetour(approuve);
             
-            // Joue les effets spéciaux (avec probabilité)
-            if (Random.value < effectProbability)
+            // Joue les effets via EffectsManager (centralise tous les effets)
+            if (EffectsManager.Instance != null)
             {
                 if (wasCorrect)
                 {
+                    EffectsManager.Instance.PlayCorrectEffect();
                     PlayFireworks();
                 }
                 else
                 {
-                    PlayGlitchEffect();
+                    EffectsManager.Instance.PlayWrongEffect();
                 }
             }
             
@@ -216,16 +209,6 @@ public class EmailCardUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         if (fireworksEffect != null)
         {
             fireworksEffect.Play();
-            Debug.Log("🎆 Feux d'artifice !");
-        }
-    }
-
-    void PlayGlitchEffect()
-    {
-        if (glitchEffect != null)
-        {
-            glitchEffect.Play();
-            Debug.Log("⚡ Effet glitch !");
         }
     }
 

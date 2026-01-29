@@ -80,15 +80,7 @@ public class EffectsManager : MonoBehaviour
     /// </summary>
     public void PlayWrongEffect()
     {
-        // Léger shake de la carte
-        if (emailCard != null)
-        {
-            emailCard.DOKill();
-            emailCard.DOShakeAnchorPos(0.3f, new Vector2(15f, 3f), 15, 90, false, true)
-                .OnComplete(() => emailCard.anchoredPosition = emailCardOriginalPos);
-        }
-        
-        // Effet glitch (avec probabilité)
+        // Effet glitch seulement (avec probabilité)
         if (Random.value < glitchProbability && GlitchEffect.Instance != null)
         {
             GlitchEffect.Instance.PlayGlitch();
@@ -100,14 +92,13 @@ public class EffectsManager : MonoBehaviour
     // ═══════════════════════════════════════════════════════════
 
     /// <summary>
-    /// Effet de victoire
+    /// Effet de victoire - Confettis !
     /// </summary>
     public void PlayVictoryEffect()
     {
-        // Juste un petit shake joyeux
-        if (mainCanvas != null)
+        if (ConfettiEffect.Instance != null)
         {
-            mainCanvas.DOShakeAnchorPos(0.4f, 8f, 10, 90, false, true);
+            ConfettiEffect.Instance.PlayConfetti();
         }
     }
 
