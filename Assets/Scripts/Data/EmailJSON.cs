@@ -96,4 +96,12 @@ public class EmailDatabase
     {
         return emails.FindAll(e => e.categorie == categorie);
     }
+
+    /// <summary>
+    /// Récupère des emails par difficulté
+    /// </summary>
+    public List<EmailJSON> GetEmailsByDifficulty(string difficulte)
+    {
+        return emails.FindAll(e => e.difficulte == difficulte);
+    }
 }

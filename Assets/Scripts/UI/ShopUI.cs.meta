@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 56b9e6e7899db9a4daf25f82984be046
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - shopPanel: {instanceID: 0}
+  - canvasGroup: {instanceID: 0}
+  - windowRect: {instanceID: 0}
+  - coinsText: {instanceID: 0}
+  - itemsContainer: {instanceID: 0}
+  - closeButton: {instanceID: 0}
+  - shopItemPrefab: {fileID: 6865570735921873009, guid: aa302256dfc6ddf4cb7aa5e47763c735, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -16,8 +16,12 @@ public class EndScreenAnimator : MonoBehaviour
     public TextMeshProUGUI titleText;
     public TextMeshProUGUI messageText;
     public TextMeshProUGUI scoreText;
+    
+    [Header("Boutons")]
     public Button replayButton;
-    public RectTransform buttonRect;
+    public RectTransform replayButtonRect;
+    public Button goHomeButton;          // Nouveau: "Rentrer du travail"
+    public RectTransform goHomeButtonRect;
 
     [Header("Configuration")]
     public bool isGameOver = true;
@@ -28,6 +32,20 @@ public class EndScreenAnimator : MonoBehaviour
     public Color victoryColor = new Color(0.2f, 0.8f, 0.3f);
 
     private int targetScore = 0;
+
+    void Start()
+    {
+        // Configure les boutons
+        if (replayButton != null)
+        {
+            replayButton.onClick.AddListener(OnReplayClicked);
+        }
+        
+        if (goHomeButton != null)
+        {
+            goHomeButton.onClick.AddListener(OnGoHomeClicked);
+        }
+    }
 
     void OnEnable()
     {
@@ -64,9 +82,16 @@ public class EndScreenAnimator : MonoBehaviour
             scoreText.alpha = 0f;
         }
 
-        if (buttonRect != null)
+        if (replayButtonRect != null)
         {
-            buttonRect.localScale = Vector3.zero;
+            replayButtonRect.localScale = Vector3.zero;
+        }
+        
+        if (goHomeButtonRect != null)
+        {
+            goHomeButtonRect.localScale = Vector3.zero;
+            // Cache le bouton "Rentrer" si c'est un Game Over
+            goHomeButtonRect.gameObject.SetActive(!isGameOver);
         }
 
         yield return new WaitForSeconds(0.1f);
@@ -121,10 +146,17 @@ public class EndScreenAnimator : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
 
-        // 5. Bouton avec bounce
-        if (buttonRect != null)
+        // 5. Boutons avec bounce
+        if (replayButtonRect != null)
         {
-            buttonRect.DOScale(1f, 0.4f).SetEase(Ease.OutBack);
+            replayButtonRect.DOScale(1f, 0.4f).SetEase(Ease.OutBack);
+        }
+        
+        // Bouton "Rentrer du travail" (uniquement en victoire)
+        if (goHomeButtonRect != null && !isGameOver)
+        {
+            yield return new WaitForSeconds(0.1f);
+            goHomeButtonRect.DOScale(1f, 0.4f).SetEase(Ease.OutBack);
         }
     }
 
@@ -134,7 +166,7 @@ public class EndScreenAnimator : MonoBehaviour
         int currentScore = 0;
         DOTween.To(() => currentScore, x => {
             currentScore = x;
-            scoreText.text = "Score final : " + currentScore + " pts";
+            scoreText.text = "Score : " + currentScore + " pts";
         }, targetScore, 1f).SetEase(Ease.OutQuad);
     }
 
@@ -153,11 +185,52 @@ public class EndScreenAnimator : MonoBehaviour
             messageText.text = message;
         
         if (scoreText != null)
-            scoreText.text = "Score final : 0 pts";
+            scoreText.text = "Score : 0 pts";
+            
+        // Affiche/cache le bouton "Rentrer du travail"
+        if (goHomeButtonRect != null)
+        {
+            goHomeButtonRect.gameObject.SetActive(!gameOver);
+        }
+    }
+
+    void OnReplayClicked()
+    {
+        PlayExitAnimation(() =>
+        {
+            if (isGameOver)
+            {
+                // Game Over → retour au menu principal
+                if (MainMenu.Instance != null)
+                {
+                    MainMenu.Instance.Show();
+                }
+            }
+            else
+            {
+                // Victoire → retour au menu principal (bouton "Quitter")
+                if (MainMenu.Instance != null)
+                {
+                    MainMenu.Instance.Show();
+                }
+            }
+        });
+    }
+
+    void OnGoHomeClicked()
+    {
+        PlayExitAnimation(() =>
+        {
+            // Ouvre l'écran appartement
+            if (ApartmentScreen.Instance != null)
+            {
+                ApartmentScreen.Instance.Open();
+            }
+        });
     }
 
     /// <summary>
-    /// Animation de sortie (optionnel)
+    /// Animation de sortie
     /// </summary>
     public void PlayExitAnimation(System.Action onComplete = null)
     {
@@ -186,6 +259,7 @@ public class EndScreenAnimator : MonoBehaviour
         DOTween.Kill(panelCanvasGroup);
         DOTween.Kill(titleText?.rectTransform);
         DOTween.Kill(scoreText);
-        DOTween.Kill(buttonRect);
+        DOTween.Kill(replayButtonRect);
+        DOTween.Kill(goHomeButtonRect);
     }
 }

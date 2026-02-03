@@ -3,15 +3,14 @@ using UnityEngine;
 using TMPro;
 
 /// <summary>
-/// Gère la logique globale du jeu : chargement des emails, score, intégrité.
+/// Gère la logique globale du jeu : emails, score, intégrité, progression.
 /// </summary>
 public class GameManager : MonoBehaviour
 {
-    // Pattern Singleton : on peut accéder au GameManager depuis n'importe où
     public static GameManager Instance;
 
-    [Header("📧 Configuration des Emails")]
-    [Tooltip("Utiliser le chargement JSON (sinon utilise la liste manuelle)")]
+    [Header("Configuration")]
+    [Tooltip("Utiliser le chargement JSON")]
     public bool useJSONEmails = true;
 
     [Tooltip("Liste manuelle des emails (si useJSONEmails = false)")]
@@ -19,37 +18,33 @@ public class GameManager : MonoBehaviour
 
     private int emailActuelIndex = 0;
 
-    [Header("📊 Statistiques du Joueur")]
+    [Header("Statistiques de la partie")]
     public int integrite = 100;
     public int score = 0;
+    public int coins = 0;
+    public int correctAnswers = 0;
+    public int wrongAnswers = 0;
 
-    [Header("🎨 Références UI")]
-    [Tooltip("Script qui affiche l'email à l'écran")]
+    [Header("Références UI - Gameplay")]
     public EmailCardUI emailCardUI;
-
-    [Tooltip("Texte qui affiche l'intégrité (ex: '80%')")]
     public TextMeshProUGUI integriteText;
-
-    [Tooltip("Texte qui affiche le score")]
     public TextMeshProUGUI scoreText;
-
-    [Tooltip("Texte qui affiche combien d'emails restent")]
     public TextMeshProUGUI emailsRestantsText;
+    public TextMeshProUGUI coinsText;
+    public TextMeshProUGUI dayText;
 
-    [Header("💬 Popup de Feedback")]
-    [Tooltip("Script FeedbackPopup attaché à la popup")]
+    [Header("Popup de Feedback")]
     public FeedbackPopup feedbackPopup;
 
-    [Header("🎮 Écrans de Fin")]
-    [Tooltip("Panel affiché quand l'intégrité atteint 0")]
+    [Header("Écrans de Fin")]
     public GameObject gameOverPanel;
-
-    [Tooltip("Panel affiché quand tous les emails sont traités")]
     public GameObject victoryPanel;
 
-    // Variables pour savoir quoi faire après la popup
+    // État du jeu
     private bool pendingGameOver = false;
     private bool pendingVictory = false;
+    private int currentDay = 1;
+    private DayConfig currentDayConfig;
 
     void Awake()
     {
@@ -65,33 +60,49 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        // Cache le popup au démarrage
-        if (feedbackPopup != null)
-            feedbackPopup.gameObject.SetActive(false);
+        // Cache les popups/panels et l'UI de jeu
+        if (feedbackPopup != null) feedbackPopup.gameObject.SetActive(false);
+        if (gameOverPanel != null) gameOverPanel.SetActive(false);
+        if (victoryPanel != null) victoryPanel.SetActive(false);
+        if (emailCardUI != null) emailCardUI.gameObject.SetActive(false);
 
-        // Cache les écrans de fin au démarrage
-        if (gameOverPanel != null)
-            gameOverPanel.SetActive(false);
+        // Ne lance PAS le jeu automatiquement
+        // Le jeu démarre quand le joueur clique sur la porte de l'appartement
+        // ou via RejouerJour() / JourSuivant()
+    }
 
-        if (victoryPanel != null)
-            victoryPanel.SetActive(false);
+    /// <summary>
+    /// Initialise une nouvelle partie basée sur le jour actuel du joueur.
+    /// </summary>
+    void InitialiserPartie()
+    {
+        // Récupère le jour actuel depuis la progression
+        currentDay = PlayerProgress.Instance.currentDay;
+        currentDayConfig = PlayerProgress.GetDayConfig(currentDay);
 
-        // Charge les emails depuis JSON si activé
+        // Initialise les stats avec la config du jour
+        int integrityBonus = ShopSystem.Instance != null ? ShopSystem.Instance.GetIntegrityBonus() : 0;
+        integrite = currentDayConfig.startingIntegrity + integrityBonus;
+        score = 0;
+        coins = 0;
+        correctAnswers = 0;
+        wrongAnswers = 0;
+        emailActuelIndex = 0;
+
+        // Charge les emails pour ce jour
         if (useJSONEmails && EmailLoader.Instance != null)
         {
-            emailsATraiter = EmailLoader.Instance.PrepareNewGame();
-            Debug.Log($"📧 {emailsATraiter.Count} emails chargés depuis JSON");
+            emailsATraiter = EmailLoader.Instance.PrepareGameForDay(currentDay);
+            Debug.Log($"[GameManager] Jour {currentDay}: {emailsATraiter.Count} emails, {integrite}% intégrité");
         }
 
         // Affiche le premier email
         ChargerEmailSuivant();
-
-        // Met à jour l'interface
         MettreAJourUI();
     }
 
     /// <summary>
-    /// Charge l'email suivant ou termine la partie s'il n'y en a plus.
+    /// Charge l'email suivant ou termine la journée.
     /// </summary>
     public void ChargerEmailSuivant()
     {
@@ -114,8 +125,7 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Appelée par EmailCardUI quand le joueur swipe.
-    /// Retourne true si la décision était correcte (pour les effets visuels).
+    /// Traite la décision du joueur et retourne si c'était correct.
     /// </summary>
     public bool TraiterDecisionAvecRetour(bool joueurApprouve)
     {
@@ -126,28 +136,52 @@ public class GameManager : MonoBehaviour
 
         if (decisionCorrecte)
         {
-            // ✅ BONNE RÉPONSE
+            // BONNE RÉPONSE
+            correctAnswers++;
+            PlayerProgress.Instance.UpdateStreak(true);
+
+            // Calcul des points et coins
             score += email.pointsSiCorrect;
-            Debug.Log("✅ Bonne décision ! +" + email.pointsSiCorrect + " points");
+            int earnedCoins = CalculerCoins(email.pointsSiCorrect);
+            coins += earnedCoins;
+
+            Debug.Log($"✅ Correct! +{email.pointsSiCorrect} pts, +{earnedCoins} coins (série: {PlayerProgress.Instance.currentStreak})");
 
             emailActuelIndex++;
             MettreAJourUI();
-
             Invoke("ChargerEmailSuivant", 0.5f);
         }
         else
         {
-            // ❌ MAUVAISE RÉPONSE
-            integrite -= email.degatsIntegrite;
-            if (integrite < 0) integrite = 0; // Empêche les valeurs négatives AVANT l'UI
-            Debug.Log("❌ Erreur ! -" + email.degatsIntegrite + " intégrité");
+            // MAUVAISE RÉPONSE
+            wrongAnswers++;
+            PlayerProgress.Instance.UpdateStreak(false);
+
+            // Calcul des dégâts (avec réduction si upgrades)
+            float damageMultiplier = ShopSystem.Instance != null ? ShopSystem.Instance.GetDamageMultiplier() : 1f;
+            int damage = Mathf.RoundToInt(email.degatsIntegrite * damageMultiplier);
+            integrite -= damage;
+
+            if (integrite < 0) integrite = 0;
+            Debug.Log($"❌ Erreur! -{damage} intégrité (base: {email.degatsIntegrite})");
 
             emailActuelIndex++;
             MettreAJourUI();
 
             if (integrite <= 0)
             {
-                AfficherFeedback(email.explicationErreur, true);
+                // Vérifie si le joueur a une vie supplémentaire
+                if (PlayerProgress.Instance.UseExtraLife())
+                {
+                    integrite = 25; // Restaure 25% d'intégrité
+                    MettreAJourUI();
+                    Debug.Log("💚 Vie supplémentaire utilisée!");
+                    AfficherFeedback(email.explicationErreur, false);
+                }
+                else
+                {
+                    AfficherFeedback(email.explicationErreur, true);
+                }
             }
             else
             {
@@ -159,20 +193,72 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Met à jour tous les textes de l'interface.
+    /// Calcule les coins gagnés avec les bonus.
     /// </summary>
-    void MettreAJourUI()
+    int CalculerCoins(int basePoints)
     {
-        integriteText.text = integrite + "%";
-        scoreText.text = score + " pts";
+        int streak = PlayerProgress.Instance.currentStreak;
+        int earnedCoins = PlayerProgress.Instance.CalculateCoinsForCorrectAnswer(basePoints, currentDay, streak);
 
-        int emailsRestants = emailsATraiter.Count - emailActuelIndex;
-        emailsRestantsText.text = emailsRestants.ToString();
+        // Applique le multiplicateur de la boutique
+        if (ShopSystem.Instance != null)
+        {
+            earnedCoins = Mathf.RoundToInt(earnedCoins * ShopSystem.Instance.GetCoinMultiplier());
+        }
+
+        return earnedCoins;
     }
 
     /// <summary>
-    /// Affiche le popup d'erreur avec un message pédagogique.
+    /// Utilise un indice pour l'email actuel.
     /// </summary>
+    public bool UtiliserIndice()
+    {
+        if (emailActuelIndex >= emailsATraiter.Count) return false;
+
+        if (PlayerProgress.Instance.UseHint())
+        {
+            EmailData email = emailsATraiter[emailActuelIndex];
+            string hint = email.estFrauduleux ? "Cet email est FRAUDULEUX" : "Cet email est LÉGITIME";
+            Debug.Log($"💡 Indice: {hint}");
+            // TODO: Afficher l'indice dans l'UI
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Passe l'email actuel sans pénalité.
+    /// </summary>
+    public bool PasserEmail()
+    {
+        if (emailActuelIndex >= emailsATraiter.Count) return false;
+
+        if (PlayerProgress.Instance.UseSkip())
+        {
+            Debug.Log("⏭️ Email passé");
+            emailActuelIndex++;
+            MettreAJourUI();
+            ChargerEmailSuivant();
+            return true;
+        }
+        return false;
+    }
+
+    void MettreAJourUI()
+    {
+        if (integriteText != null) integriteText.text = integrite + "%";
+        if (scoreText != null) scoreText.text = score + " pts";
+        if (coinsText != null) coinsText.text = coins.ToString();
+        if (dayText != null) dayText.text = currentDayConfig.dayName;
+
+        if (emailsRestantsText != null)
+        {
+            int restants = emailsATraiter.Count - emailActuelIndex;
+            emailsRestantsText.text = restants.ToString();
+        }
+    }
+
     void AfficherFeedback(string message, bool isGameOver)
     {
         if (feedbackPopup != null)
@@ -183,9 +269,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Appelée par FeedbackPopup quand le joueur clique OK.
-    /// </summary>
     public void OnPopupFermee()
     {
         if (pendingGameOver)
@@ -204,61 +287,60 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Appelée quand tous les emails sont traités.
-    /// </summary>
     void FinDeJournee()
     {
-        Debug.Log("🎉 Journée terminée ! Score final : " + score);
+        Debug.Log($"🎉 Jour {currentDay} terminé! Score: {score}, Coins: {coins}");
+
+        // Calcule le bonus de fin de journée
+        int bonus = PlayerProgress.Instance.CalculateDayCompletionBonus(
+            currentDay, correctAnswers, emailsATraiter.Count, integrite);
+        coins += bonus;
+
+        Debug.Log($"🎁 Bonus de fin de journée: +{bonus} coins");
+
+        // Sauvegarde la progression
+        PlayerProgress.Instance.AddCoins(coins);
+        PlayerProgress.Instance.RecordVictory(score, correctAnswers, wrongAnswers);
+        PlayerProgress.Instance.AdvanceToNextDay();
+
         AfficherVictoire();
     }
 
-    /// <summary>
-    /// Affiche l'écran de victoire.
-    /// </summary>
     void AfficherVictoire()
     {
-        // Joue les confettis
         if (EffectsManager.Instance != null)
         {
             EffectsManager.Instance.PlayVictoryEffect();
         }
 
-        // Affiche l'écran de victoire
         if (victoryPanel != null)
         {
-            // Configure l'animator si présent
             EndScreenAnimator animator = victoryPanel.GetComponent<EndScreenAnimator>();
             if (animator != null)
             {
-                animator.Setup(false, score, "MISSION ACCOMPLIE !", "Vous avez protégé le réseau !");
+                string title = $"JOUR {currentDay} TERMINÉ !";
+                string message = $"Emails traités: {correctAnswers}/{emailsATraiter.Count}\nCoins gagnés: {coins}";
+                animator.Setup(false, score, title, message);
             }
-
             victoryPanel.SetActive(true);
         }
 
-        // Cache l'email en cours
-        if (emailCardUI != null)
-            emailCardUI.gameObject.SetActive(false);
+        if (emailCardUI != null) emailCardUI.gameObject.SetActive(false);
     }
 
-    /// <summary>
-    /// Appelée quand l'intégrité atteint 0.
-    /// </summary>
     void GameOver()
     {
-        Debug.Log("💀 GAME OVER - Le réseau est compromis !");
+        Debug.Log($"💀 Game Over au jour {currentDay}");
 
-        // Cache l'email en cours
-        if (emailCardUI != null)
-            emailCardUI.gameObject.SetActive(false);
+        // Sauvegarde les coins gagnés avant la défaite
+        PlayerProgress.Instance.AddCoins(coins);
+        PlayerProgress.Instance.RecordDefeat(score, correctAnswers, wrongAnswers);
 
-        // Joue l'effet de glitch puis affiche l'écran
+        if (emailCardUI != null) emailCardUI.gameObject.SetActive(false);
+
         if (EffectsManager.Instance != null)
         {
-            EffectsManager.Instance.PlayGameOverEffect(() => {
-                AfficherEcranGameOver();
-            });
+            EffectsManager.Instance.PlayGameOverEffect(() => AfficherEcranGameOver());
         }
         else
         {
@@ -266,65 +348,75 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Affiche le panel Game Over (appelé après l'effet de glitch)
-    /// </summary>
     void AfficherEcranGameOver()
     {
         if (gameOverPanel != null)
         {
-            // Configure l'animator si présent
             EndScreenAnimator animator = gameOverPanel.GetComponent<EndScreenAnimator>();
             if (animator != null)
             {
-                animator.Setup(true, score, "GAME OVER", "Le réseau a été compromis !");
+                string message = $"Jour {currentDay}\nCoins gagnés: {coins}";
+                animator.Setup(true, score, "GAME OVER", message);
             }
-
             gameOverPanel.SetActive(true);
             gameOverPanel.transform.SetAsLastSibling();
         }
     }
 
     /// <summary>
-    /// Redémarre la partie (appelée par les boutons Rejouer)
+    /// Recommence le jour actuel.
+    /// </summary>
+    public void RejouerJour()
+    {
+        if (GlitchEffect.Instance != null) GlitchEffect.Instance.StopGlitch();
+        if (ConfettiEffect.Instance != null) ConfettiEffect.Instance.StopConfetti();
+
+        if (gameOverPanel != null) gameOverPanel.SetActive(false);
+        if (victoryPanel != null) victoryPanel.SetActive(false);
+        if (emailCardUI != null) emailCardUI.gameObject.SetActive(true);
+
+        // Réinitialise la partie pour le même jour
+        InitialiserPartie();
+
+        Debug.Log($"🔄 Jour {currentDay} recommencé");
+    }
+
+    /// <summary>
+    /// Passe au jour suivant (après une victoire).
+    /// </summary>
+    public void JourSuivant()
+    {
+        if (GlitchEffect.Instance != null) GlitchEffect.Instance.StopGlitch();
+        if (ConfettiEffect.Instance != null) ConfettiEffect.Instance.StopConfetti();
+
+        if (gameOverPanel != null) gameOverPanel.SetActive(false);
+        if (victoryPanel != null) victoryPanel.SetActive(false);
+        if (emailCardUI != null) emailCardUI.gameObject.SetActive(true);
+
+        // La progression est déjà sauvegardée, on initialise juste la nouvelle partie
+        InitialiserPartie();
+
+        Debug.Log($"➡️ Passage au jour {currentDay}");
+    }
+
+    /// <summary>
+    /// Redémarre depuis le jour 1 (reset complet).
     /// </summary>
     public void RedemarrerPartie()
     {
-        // Reset les effets visuels
-        if (GlitchEffect.Instance != null)
-        {
-            GlitchEffect.Instance.StopGlitch();
-        }
+        if (GlitchEffect.Instance != null) GlitchEffect.Instance.StopGlitch();
+        if (ConfettiEffect.Instance != null) ConfettiEffect.Instance.StopConfetti();
 
-        if (ConfettiEffect.Instance != null)
-        {
-            ConfettiEffect.Instance.StopConfetti();
-        }
+        // Reset le jour à 1 (mais garde les coins/upgrades)
+        PlayerProgress.Instance.currentDay = 1;
+        PlayerProgress.Instance.Save();
 
-        // Réinitialise les stats
-        integrite = 100;
-        score = 0;
-        emailActuelIndex = 0;
-
-        // Cache les écrans de fin
         if (gameOverPanel != null) gameOverPanel.SetActive(false);
         if (victoryPanel != null) victoryPanel.SetActive(false);
+        if (emailCardUI != null) emailCardUI.gameObject.SetActive(true);
 
-        // Recharge des emails aléatoires depuis JSON
-        if (useJSONEmails && EmailLoader.Instance != null)
-        {
-            emailsATraiter = EmailLoader.Instance.PrepareNewGame();
-            Debug.Log($"📧 Nouvelle partie : {emailsATraiter.Count} emails chargés");
-        }
+        InitialiserPartie();
 
-        // Réaffiche la carte email
-        if (emailCardUI != null)
-            emailCardUI.gameObject.SetActive(true);
-
-        // Recharge le premier email
-        ChargerEmailSuivant();
-        MettreAJourUI();
-
-        Debug.Log("🔄 Partie redémarrée !");
+        Debug.Log("🔄 Partie redémarrée depuis le jour 1");
     }
 }
