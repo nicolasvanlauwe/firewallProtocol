@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 /// <summary>
 /// Représente un email chargé depuis JSON.
-/// Version simplifiée sans ScriptableObject.
 /// </summary>
 [Serializable]
 public class EmailJSON
@@ -18,24 +17,24 @@ public class EmailJSON
     public string explicationErreur;
     public int pointsSiCorrect;
     public int degatsIntegrite;
-    public string categorie;        // "phishing", "spam", "legitime", "urgence"
     public string difficulte;       // "facile", "moyen", "difficile"
     
     /// <summary>
-    /// Convertit en EmailData (ScriptableObject) pour compatibilité
+    /// Convertit en EmailData
     /// </summary>
     public EmailData ToEmailData()
     {
-        EmailData data = ScriptableObject.CreateInstance<EmailData>();
-        data.expediteurNom = expediteurNom;
-        data.expediteurEmail = expediteurEmail;
-        data.objet = objet;
-        data.corpsDuMessage = corpsDuMessage;
-        data.estFrauduleux = estFrauduleux;
-        data.explicationErreur = explicationErreur;
-        data.pointsSiCorrect = pointsSiCorrect;
-        data.degatsIntegrite = degatsIntegrite;
-        return data;
+        return new EmailData
+        {
+            expediteurNom = expediteurNom,
+            expediteurEmail = expediteurEmail,
+            objet = objet,
+            corpsDuMessage = corpsDuMessage,
+            estFrauduleux = estFrauduleux,
+            explicationErreur = explicationErreur,
+            pointsSiCorrect = pointsSiCorrect,
+            degatsIntegrite = degatsIntegrite
+        };
     }
 }
 
@@ -89,14 +88,6 @@ public class EmailDatabase
         return shuffled.GetRange(0, Mathf.Min(count, shuffled.Count));
     }
     
-    /// <summary>
-    /// Récupère des emails par catégorie
-    /// </summary>
-    public List<EmailJSON> GetEmailsByCategory(string categorie)
-    {
-        return emails.FindAll(e => e.categorie == categorie);
-    }
-
     /// <summary>
     /// Récupère des emails par difficulté
     /// </summary>

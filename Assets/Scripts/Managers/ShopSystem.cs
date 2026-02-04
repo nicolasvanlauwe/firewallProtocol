@@ -1,5 +1,4 @@
 using UnityEngine;
-using System;
 using System.Collections.Generic;
 
 /// <summary>
@@ -206,22 +205,7 @@ public class ShopSystem : MonoBehaviour
     /// </summary>
     void ApplyConsumable(ShopItem item, PlayerProgress progress)
     {
-        // Si c'est un pack, applique le contenu
-        if (item.packContents != null && item.packContents.Count > 0)
-        {
-            foreach (var content in item.packContents)
-            {
-                for (int i = 0; i < content.Value; i++)
-                {
-                    ApplySingleConsumable(content.Key, progress);
-                }
-            }
-        }
-        else
-        {
-            ApplySingleConsumable(item.id, progress);
-        }
-
+        ApplySingleConsumable(item.id, progress);
         progress.Save();
     }
 
@@ -287,7 +271,6 @@ public class ShopSystem : MonoBehaviour
 /// <summary>
 /// Représente un item de la boutique
 /// </summary>
-[Serializable]
 public class ShopItem
 {
     public string id;
@@ -298,7 +281,6 @@ public class ShopItem
     public string icon;
     public bool isConsumable;
     public string requiredItem;  // Item requis pour débloquer
-    public Dictionary<string, int> packContents;  // Contenu si c'est un pack
 }
 
 /// <summary>
@@ -307,6 +289,5 @@ public class ShopItem
 public enum ShopCategory
 {
     Consumable,     // Consommables (vies, indices...)
-    Upgrade,        // Améliorations permanentes
-    Pack            // Packs groupés
+    Upgrade         // Améliorations permanentes
 }

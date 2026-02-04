@@ -10,31 +10,28 @@
       "explicationErreur": "Le célèbre scam du 'Prince Nigérian'. Aucun prince ne vous contactera par email pour vous donner de l'argent.",
       "pointsSiCorrect": 10,
       "degatsIntegrite": 15,
-      "categorie": "phishing",
       "difficulte": "facile"
     },
     {
       "expediteurNom": "Loterie Nationale",
       "expediteurEmail": "winner@euro-millions-winner.com",
-      "objet": "🎉 FÉLICITATIONS ! Vous avez gagné 1.500.000€ !",
+      "objet": "FÉLICITATIONS ! Vous avez gagné 1.500.000€ !",
       "corpsDuMessage": "FÉLICITATIONS !!!\n\nVotre email a été tiré au sort et vous avez GAGNÉ 1.500.000€ à l'Euro Millions !\n\nPour réclamer votre prix, envoyez vos coordonnées complètes.\n\nNe tardez pas !",
       "estFrauduleux": true,
       "explicationErreur": "On ne gagne PAS à une loterie sans y avoir joué. Les vrais gains sont gérés officiellement, jamais par email.",
       "pointsSiCorrect": 10,
       "degatsIntegrite": 15,
-      "categorie": "phishing",
       "difficulte": "facile"
     },
     {
       "expediteurNom": "Support Microsoft",
       "expediteurEmail": "support@microsoft-security-alert.com",
       "objet": "ALERTE : Votre ordinateur est infecté !",
-      "corpsDuMessage": "ALERTE VIRUS DETECTÉ !\n\nNotre système a détecté un virus dangereux sur votre PC.\n\nAppelez immédiatement notre support technique au 01 89 XX XX XX.\n\nMicrosoft Support",
+      "corpsDuMessage": "ALERTE VIRUS DÉTECTÉ !\n\nNotre système a détecté un virus dangereux sur votre PC.\n\nAppelez immédiatement notre support technique au 01 89 XX XX XX.\n\nMicrosoft Support",
       "estFrauduleux": true,
       "explicationErreur": "Microsoft ne vous contacte JAMAIS par email pour des virus. Le domaine 'microsoft-security-alert.com' est faux.",
       "pointsSiCorrect": 10,
       "degatsIntegrite": 20,
-      "categorie": "phishing",
       "difficulte": "facile"
     },
     {
@@ -46,7 +43,6 @@
       "explicationErreur": "Email familial classique. Pas de demande d'argent ou d'informations sensibles.",
       "pointsSiCorrect": 10,
       "degatsIntegrite": 10,
-      "categorie": "legitime",
       "difficulte": "facile"
     },
     {
@@ -58,7 +54,6 @@
       "explicationErreur": "Email professionnel classique entre collègues. Pas de lien suspect, pas de demande urgente.",
       "pointsSiCorrect": 10,
       "degatsIntegrite": 10,
-      "categorie": "legitime",
       "difficulte": "facile"
     },
     {
@@ -70,7 +65,6 @@
       "explicationErreur": "Communication RH classique. Domaine officiel, pas de demande suspecte.",
       "pointsSiCorrect": 10,
       "degatsIntegrite": 10,
-      "categorie": "legitime",
       "difficulte": "facile"
     },
     {
@@ -82,7 +76,6 @@
       "explicationErreur": "L'email vient de @dhl.com (domaine officiel). Le lien pointe vers le site officiel.",
       "pointsSiCorrect": 10,
       "degatsIntegrite": 10,
-      "categorie": "legitime",
       "difficulte": "facile"
     },
     {
@@ -94,7 +87,6 @@
       "explicationErreur": "Reçu de paiement standard. L'email vient de @spotify.com (officiel).",
       "pointsSiCorrect": 10,
       "degatsIntegrite": 10,
-      "categorie": "legitime",
       "difficulte": "facile"
     },
 
@@ -107,7 +99,6 @@
       "explicationErreur": "L'adresse utilise 'amaz0n' avec un ZÉRO au lieu d'un O. Amazon n'envoie jamais de liens vers des domaines suspects.",
       "pointsSiCorrect": 15,
       "degatsIntegrite": 20,
-      "categorie": "phishing",
       "difficulte": "moyen"
     },
     {
@@ -119,7 +110,6 @@
       "explicationErreur": "'netfliix' est écrit avec DEUX I. Le vrai domaine est netflix.com. L'urgence artificielle (24h) est une manipulation.",
       "pointsSiCorrect": 15,
       "degatsIntegrite": 25,
-      "categorie": "phishing",
       "difficulte": "moyen"
     },
     {
@@ -131,7 +121,6 @@
       "explicationErreur": "Chronopost utilise @chronopost.fr, pas un domaine .info. Les frais de douane sont payés à la livraison.",
       "pointsSiCorrect": 15,
       "degatsIntegrite": 20,
-      "categorie": "phishing",
       "difficulte": "moyen"
     },
     {
@@ -143,7 +132,6 @@
       "explicationErreur": "Le vrai site est impots.gouv.FR et non .NET. Les impôts ne demandent JAMAIS vos coordonnées bancaires par email.",
       "pointsSiCorrect": 15,
       "degatsIntegrite": 25,
-      "categorie": "phishing",
       "difficulte": "moyen"
     },
     {
@@ -155,7 +143,6 @@
       "explicationErreur": "WhatsApp ne demande JAMAIS de vérification par email. La vérification se fait uniquement via l'app avec un code SMS.",
       "pointsSiCorrect": 15,
       "degatsIntegrite": 20,
-      "categorie": "phishing",
       "difficulte": "moyen"
     },
     {
@@ -167,7 +154,6 @@
       "explicationErreur": "La vraie CAF utilise @caf.fr, pas @caf-info.org. La CAF ne demande JAMAIS vos coordonnées bancaires par email.",
       "pointsSiCorrect": 15,
       "degatsIntegrite": 25,
-      "categorie": "phishing",
       "difficulte": "moyen"
     },
     {
@@ -179,7 +165,6 @@
       "explicationErreur": "L'Assurance Maladie utilise @assurance-maladie.fr ou @ameli.fr. Les remboursements sont automatiques.",
       "pointsSiCorrect": 15,
       "degatsIntegrite": 25,
-      "categorie": "phishing",
       "difficulte": "moyen"
     },
     {
@@ -191,7 +176,6 @@
       "explicationErreur": "La Banque Postale vous redirige vers son site OFFICIEL. Pas de lien suspect dans l'email.",
       "pointsSiCorrect": 15,
       "degatsIntegrite": 20,
-      "categorie": "legitime",
       "difficulte": "moyen"
     },
     {
@@ -203,7 +187,6 @@
       "explicationErreur": "Alerte de sécurité standard de Google. L'email vient de @accounts.google.com (officiel).",
       "pointsSiCorrect": 15,
       "degatsIntegrite": 15,
-      "categorie": "legitime",
       "difficulte": "moyen"
     },
     {
@@ -215,7 +198,6 @@
       "explicationErreur": "Notification standard de LinkedIn. Le lien pointe vers le vrai site linkedin.com.",
       "pointsSiCorrect": 15,
       "degatsIntegrite": 15,
-      "categorie": "legitime",
       "difficulte": "moyen"
     },
     {
@@ -227,7 +209,6 @@
       "explicationErreur": "mail.instagram.com est un domaine officiel. L'email ne contient pas de lien suspect.",
       "pointsSiCorrect": 15,
       "degatsIntegrite": 15,
-      "categorie": "legitime",
       "difficulte": "moyen"
     },
     {
@@ -239,7 +220,6 @@
       "explicationErreur": "Notification de livraison standard. Le lien pointe vers le site officiel de La Poste.",
       "pointsSiCorrect": 15,
       "degatsIntegrite": 15,
-      "categorie": "legitime",
       "difficulte": "moyen"
     },
 
@@ -252,7 +232,6 @@
       "explicationErreur": "'paypa1' utilise le chiffre 1 au lieu de la lettre L. Cette technique s'appelle le 'typosquatting'.",
       "pointsSiCorrect": 20,
       "degatsIntegrite": 30,
-      "categorie": "phishing",
       "difficulte": "difficile"
     },
     {
@@ -264,7 +243,6 @@
       "explicationErreur": "L'email contient 'apple.com' mais le VRAI domaine est 'suspicious-login.com'. Toujours regarder la FIN de l'adresse.",
       "pointsSiCorrect": 20,
       "degatsIntegrite": 30,
-      "categorie": "phishing",
       "difficulte": "difficile"
     },
     {
@@ -276,7 +254,6 @@
       "explicationErreur": "ARNAQUE AU PRÉSIDENT ! Même si l'email semble venir du boss, toujours vérifier par téléphone. La mention 'confidentiel' est un red flag.",
       "pointsSiCorrect": 25,
       "degatsIntegrite": 35,
-      "categorie": "phishing",
       "difficulte": "difficile"
     },
     {
@@ -288,7 +265,6 @@
       "explicationErreur": "Même si le ton est urgent, l'email vient du domaine officiel. Le lien pointe vers le portail habituel.",
       "pointsSiCorrect": 20,
       "degatsIntegrite": 25,
-      "categorie": "legitime",
       "difficulte": "difficile"
     },
     {
@@ -300,7 +276,6 @@
       "explicationErreur": "Email informatif standard. Le domaine est officiel et il n'y a pas de demande d'informations sensibles.",
       "pointsSiCorrect": 20,
       "degatsIntegrite": 25,
-      "categorie": "legitime",
       "difficulte": "difficile"
     },
     {
@@ -312,7 +287,6 @@
       "explicationErreur": "Notification de renouvellement standard. Le domaine @amazon.fr est officiel.",
       "pointsSiCorrect": 20,
       "degatsIntegrite": 20,
-      "categorie": "legitime",
       "difficulte": "difficile"
     },
     {
@@ -324,7 +298,6 @@
       "explicationErreur": "Échange professionnel classique avec un client/fournisseur. Toujours scanner les pièces jointes par précaution.",
       "pointsSiCorrect": 20,
       "degatsIntegrite": 20,
-      "categorie": "legitime",
       "difficulte": "difficile"
     },
 
@@ -337,7 +310,6 @@
       "explicationErreur": "Même si le domaine semble légitime, les RH ne demandent JAMAIS un RIB par email. Technique de spear phishing interne. Toujours appeler pour vérifier.",
       "pointsSiCorrect": 30,
       "degatsIntegrite": 40,
-      "categorie": "phishing",
       "difficulte": "expert"
     },
     {
@@ -349,7 +321,6 @@
       "explicationErreur": "Le domaine microsoft365.com SEMBLE légitime mais le vrai domaine Microsoft est microsoft.com. Les notifications viennent de @microsoft.com.",
       "pointsSiCorrect": 30,
       "degatsIntegrite": 35,
-      "categorie": "phishing",
       "difficulte": "expert"
     },
     {
@@ -361,7 +332,6 @@
       "explicationErreur": "DocuSign utilise @docusign.com, pas @docusign.net. Les faux DocuSign sont très courants. Toujours vérifier l'expéditeur réel.",
       "pointsSiCorrect": 30,
       "degatsIntegrite": 35,
-      "categorie": "phishing",
       "difficulte": "expert"
     },
     {
@@ -373,19 +343,17 @@
       "explicationErreur": "Notification Slack standard. Le domaine @slack.com est officiel et les liens pointent vers des domaines légitimes.",
       "pointsSiCorrect": 25,
       "degatsIntegrite": 30,
-      "categorie": "legitime",
       "difficulte": "expert"
     },
     {
       "expediteurNom": "Dropbox",
       "expediteurEmail": "no-reply@dropbox.com",
       "objet": "Pierre a partagé un dossier avec vous",
-      "corpsDuMessage": "Pierre Durand a partagé un dossier avec vous :\n\n📁 Projet Q4 2024\n\nAccéder au dossier : https://www.dropbox.com/sh/abc123\n\nSi vous ne connaissez pas cette personne, ignorez cet email.\n\nDropbox",
+      "corpsDuMessage": "Pierre Durand a partagé un dossier avec vous :\n\nProjet Q4 2024\n\nAccéder au dossier : https://www.dropbox.com/sh/abc123\n\nSi vous ne connaissez pas cette personne, ignorez cet email.\n\nDropbox",
       "estFrauduleux": false,
       "explicationErreur": "Notification de partage Dropbox standard. Le domaine est officiel et le lien pointe vers dropbox.com.",
       "pointsSiCorrect": 25,
       "degatsIntegrite": 30,
-      "categorie": "legitime",
       "difficulte": "expert"
     },
     {
@@ -397,7 +365,6 @@
       "explicationErreur": "Notification WeTransfer standard. Le domaine est officiel. En cas de doute, vérifiez auprès de l'expéditeur.",
       "pointsSiCorrect": 25,
       "degatsIntegrite": 25,
-      "categorie": "legitime",
       "difficulte": "expert"
     },
     {
@@ -409,7 +376,6 @@
       "explicationErreur": "Notification OVH standard pour le renouvellement de domaine. Le lien pointe vers le manager officiel.",
       "pointsSiCorrect": 25,
       "degatsIntegrite": 30,
-      "categorie": "legitime",
       "difficulte": "expert"
     },
     {
@@ -421,7 +387,6 @@
       "explicationErreur": "Le domaine ovhcloud-renewal.com est faux. OVH utilise @ovh.com ou @ovhcloud.com. L'urgence excessive est un red flag.",
       "pointsSiCorrect": 30,
       "degatsIntegrite": 35,
-      "categorie": "phishing",
       "difficulte": "expert"
     },
     {
@@ -433,7 +398,6 @@
       "explicationErreur": "Rappel Zoom standard. Le domaine zoom.us est le domaine officiel de Zoom.",
       "pointsSiCorrect": 25,
       "degatsIntegrite": 25,
-      "categorie": "legitime",
       "difficulte": "expert"
     },
     {
@@ -445,7 +409,6 @@
       "explicationErreur": "Le domaine zoom-meetings.net est faux. Zoom utilise zoom.us. Zoom n'envoie pas d'emails pour des 'appels manqués'.",
       "pointsSiCorrect": 30,
       "degatsIntegrite": 35,
-      "categorie": "phishing",
       "difficulte": "expert"
     },
     {
@@ -457,7 +420,6 @@
       "explicationErreur": "Notification de sécurité standard. Le domaine @bnp-paribas.fr est officiel et l'email vous invite à appeler, pas à cliquer.",
       "pointsSiCorrect": 25,
       "degatsIntegrite": 30,
-      "categorie": "legitime",
       "difficulte": "expert"
     },
     {
@@ -469,7 +431,6 @@
       "explicationErreur": "Le domaine bnp-secure-login.com est faux. BNP utilise @bnpparibas.fr ou @bnp-paribas.fr. Jamais de liens directs vers des pages de connexion.",
       "pointsSiCorrect": 30,
       "degatsIntegrite": 40,
-      "categorie": "phishing",
       "difficulte": "expert"
     },
     {
@@ -481,7 +442,6 @@
       "explicationErreur": "Partage Google Drive standard. Le domaine @google.com est officiel et le lien pointe vers drive.google.com.",
       "pointsSiCorrect": 25,
       "degatsIntegrite": 30,
-      "categorie": "legitime",
       "difficulte": "expert"
     }
   ]

@@ -9,12 +9,8 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    [Header("Configuration")]
-    [Tooltip("Utiliser le chargement JSON")]
-    public bool useJSONEmails = true;
-
-    [Tooltip("Liste manuelle des emails (si useJSONEmails = false)")]
-    public List<EmailData> emailsATraiter;
+    // Liste des emails chargés depuis le JSON
+    private List<EmailData> emailsATraiter;
 
     private int emailActuelIndex = 0;
 
@@ -89,11 +85,16 @@ public class GameManager : MonoBehaviour
         wrongAnswers = 0;
         emailActuelIndex = 0;
 
-        // Charge les emails pour ce jour
-        if (useJSONEmails && EmailLoader.Instance != null)
+        // Charge les emails depuis le JSON
+        if (EmailLoader.Instance != null)
         {
             emailsATraiter = EmailLoader.Instance.PrepareGameForDay(currentDay);
             Debug.Log($"[GameManager] Jour {currentDay}: {emailsATraiter.Count} emails, {integrite}% intégrité");
+        }
+        else
+        {
+            Debug.LogError("[GameManager] EmailLoader.Instance est null!");
+            emailsATraiter = new List<EmailData>();
         }
 
         // Affiche le premier email
@@ -407,9 +408,8 @@ public class GameManager : MonoBehaviour
         if (GlitchEffect.Instance != null) GlitchEffect.Instance.StopGlitch();
         if (ConfettiEffect.Instance != null) ConfettiEffect.Instance.StopConfetti();
 
-        // Reset le jour à 1 (mais garde les coins/upgrades)
-        PlayerProgress.Instance.currentDay = 1;
-        PlayerProgress.Instance.Save();
+        // Reset complet (coins, progression, tout)
+        PlayerProgress.Instance.Reset();
 
         if (gameOverPanel != null) gameOverPanel.SetActive(false);
         if (victoryPanel != null) victoryPanel.SetActive(false);
@@ -417,6 +417,6 @@ public class GameManager : MonoBehaviour
 
         InitialiserPartie();
 
-        Debug.Log("🔄 Partie redémarrée depuis le jour 1");
+        Debug.Log("🔄 Partie redémarrée depuis le jour 1 (reset complet)");
     }
 }
