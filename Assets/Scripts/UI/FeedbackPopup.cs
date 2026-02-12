@@ -20,21 +20,12 @@ public class FeedbackPopup : MonoBehaviour
     [Tooltip("Fond cliquable qui couvre tout l'écran")]
     public Button backgroundButton;
     
-    [Header("📐 Paramètres de taille")]
-    [Tooltip("Largeur fixe de la popup")]
-    public float popupWidth = 700f;
-    
-    [Tooltip("Hauteur minimum de la popup")]
-    public float minHeight = 200f;
-    
-    [Tooltip("Hauteur maximum de la popup")]
-    public float maxHeight = 600f;
-    
-    [Tooltip("Padding vertical (espace en haut et en bas)")]
-    public float paddingVertical = 120f;
-    
-    [Tooltip("Padding horizontal pour le texte")]
-    public float paddingHorizontal = 150f;
+    // Paramètres de taille
+    private float popupWidth = 700f;
+    private float minHeight = 200f;
+    private float maxHeight = 700f;
+    private float paddingVertical = 170f;
+    private float paddingHorizontal = 150f;
     
     [Header("💡 Indication")]
     [Tooltip("Texte qui indique de toucher pour fermer (optionnel)")]

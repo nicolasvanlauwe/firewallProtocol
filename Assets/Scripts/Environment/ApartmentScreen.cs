@@ -209,7 +209,9 @@ public class ApartmentScreen : MonoBehaviour
 
         if (dayText != null)
         {
-            DayConfig config = PlayerProgress.GetDayConfig(progress.currentDay);
+            // On affiche le jour qu'on vient de terminer (currentDay a déjà été incrémenté)
+            int jourAffiche = Mathf.Max(1, progress.currentDay - 1);
+            DayConfig config = PlayerProgress.GetDayConfig(jourAffiche);
             dayText.text = config.dayName;
         }
     }

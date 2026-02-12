@@ -73,10 +73,37 @@ public class EmailCardUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         objetText.text = "Objet: " + email.objet;
         corpsText.text = email.corpsDuMessage;
 
+        // Recalcule les positions pour éviter le chevauchement
+        StartCoroutine(AjusterPositionsApresFrame());
+
         rectTransform.anchoredPosition = originalPosition;
-        
+
         // Reset le contour
         HideOutline();
+    }
+
+    private IEnumerator AjusterPositionsApresFrame()
+    {
+        yield return null;
+
+        // Force la mise à jour pour obtenir la vraie taille du texte
+        expediteurText.ForceMeshUpdate();
+
+        // Positionne l'objet juste en dessous de l'expéditeur avec une marge
+        float expediteurBottom = expediteurText.rectTransform.anchoredPosition.y - expediteurText.preferredHeight;
+        float marge = 10f;
+        objetText.rectTransform.anchoredPosition = new Vector2(
+            objetText.rectTransform.anchoredPosition.x,
+            expediteurBottom - marge
+        );
+
+        // Positionne le corps juste en dessous de l'objet
+        objetText.ForceMeshUpdate();
+        float objetBottom = objetText.rectTransform.anchoredPosition.y - objetText.preferredHeight;
+        corpsText.rectTransform.anchoredPosition = new Vector2(
+            corpsText.rectTransform.anchoredPosition.x,
+            objetBottom - marge
+        );
     }
 
     void HideOutline()
