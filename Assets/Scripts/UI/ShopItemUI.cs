@@ -34,7 +34,7 @@ public class ShopItemUI : MonoBehaviour
         // Textes
         if (nameText != null) nameText.text = shopItem.name;
         if (descriptionText != null) descriptionText.text = shopItem.description;
-        if (priceText != null) priceText.text = shopItem.price.ToString() + " coins";
+        if (priceText != null) priceText.text = shopItem.price.ToString() + " cryptos";
 
         // Bouton
         if (buyButton != null)

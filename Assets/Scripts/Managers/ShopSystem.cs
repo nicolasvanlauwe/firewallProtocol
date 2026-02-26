@@ -82,8 +82,8 @@ public class ShopSystem : MonoBehaviour
         new ShopItem
         {
             id = "coin_boost_1",
-            name = "Bonus Coins +10%",
-            description = "Gagnez 10% de coins en plus (permanent)",
+            name = "Bonus Cryptos +10%",
+            description = "Gagnez 10% de cryptos en plus (permanent)",
             price = 300,
             category = ShopCategory.Upgrade,
             icon = "coin_boost",
@@ -92,8 +92,8 @@ public class ShopSystem : MonoBehaviour
         new ShopItem
         {
             id = "coin_boost_2",
-            name = "Bonus Coins +25%",
-            description = "Gagnez 25% de coins en plus (permanent)",
+            name = "Bonus Cryptos +25%",
+            description = "Gagnez 25% de cryptos en plus (permanent)",
             price = 800,
             category = ShopCategory.Upgrade,
             icon = "coin_boost",

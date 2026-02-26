@@ -106,7 +106,7 @@ public class MainMenu : MonoBehaviour
         if (progress == null) return;
 
         if (coinsText != null)
-            coinsText.text = progress.coins.ToString();
+            coinsText.text = progress.coins + " cryptos";
 
         if (dayText != null)
         {

@@ -121,7 +121,7 @@ public class PlayerProgress
         string[] jours = { "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi" };
         int semaine = (day - 1) / 5 + 1;
         int jourDeSemaine = (day - 1) % 5;
-        return $"{jours[jourDeSemaine]} (Semaine {semaine})";
+        return $"{jours[jourDeSemaine]} - S{semaine}";
     }
 
     // ═══════════════════════════════════════════════════════════

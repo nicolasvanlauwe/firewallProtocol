@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI emailsRestantsText;
     public TextMeshProUGUI coinsText;
     public TextMeshProUGUI dayText;
+    public TextMeshProUGUI gameplayDayText;
 
     [Header("Popup de Feedback")]
     public FeedbackPopup feedbackPopup;
@@ -252,6 +253,7 @@ public class GameManager : MonoBehaviour
         if (scoreText != null) scoreText.text = score + " pts";
         if (coinsText != null) coinsText.text = coins.ToString();
         if (dayText != null) dayText.text = currentDayConfig.dayName;
+        if (gameplayDayText != null) gameplayDayText.text = currentDayConfig.dayName;
 
         if (emailsRestantsText != null)
         {
@@ -320,7 +322,7 @@ public class GameManager : MonoBehaviour
             if (animator != null)
             {
                 string title = $"JOUR {currentDay} TERMINÉ !";
-                string message = $"Emails traités: {correctAnswers}/{emailsATraiter.Count}\nCoins gagnés: {coins}";
+                string message = $"Emails traités: {correctAnswers}/{emailsATraiter.Count}\nCryptos gagnés: {coins}";
                 animator.Setup(false, score, title, message);
             }
             victoryPanel.SetActive(true);
@@ -356,7 +358,7 @@ public class GameManager : MonoBehaviour
             EndScreenAnimator animator = gameOverPanel.GetComponent<EndScreenAnimator>();
             if (animator != null)
             {
-                string message = $"Jour {currentDay}\nCoins gagnés: {coins}";
+                string message = $"Jour {currentDay}\nCryptos gagnés: {coins}";
                 animator.Setup(true, score, "GAME OVER", message);
             }
             gameOverPanel.SetActive(true);
