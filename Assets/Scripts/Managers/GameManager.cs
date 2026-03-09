@@ -306,6 +306,12 @@ public class GameManager : MonoBehaviour
         PlayerProgress.Instance.RecordVictory(score, correctAnswers, wrongAnswers);
         PlayerProgress.Instance.AdvanceToNextDay();
 
+        // Envoie le score au leaderboard
+        if (LeaderboardManager.Instance != null)
+        {
+            LeaderboardManager.Instance.SubmitScore(score, PlayerProgress.Instance.highestDayReached);
+        }
+
         AfficherVictoire();
     }
 
@@ -322,7 +328,7 @@ public class GameManager : MonoBehaviour
             if (animator != null)
             {
                 string title = $"JOUR {currentDay} TERMINÉ !";
-                string message = $"Emails traités: {correctAnswers}/{emailsATraiter.Count}\nCryptos gagnés: {coins}";
+                string message = $"Réponses correctes: {correctAnswers}/{emailsATraiter.Count}\nCryptos gagnés: {coins}";
                 animator.Setup(false, score, title, message);
             }
             victoryPanel.SetActive(true);

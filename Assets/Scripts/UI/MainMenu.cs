@@ -17,11 +17,19 @@ public class MainMenu : MonoBehaviour
     [Header("Boutons")]
     public Button continueButton;      // Nouvelle partie / Continuer
     public Button playButton;          // Recommencer (si partie en cours)
+    public Button leaderboardButton;   // Classement en ligne
 
     [Header("Textes")]
     public TextMeshProUGUI titleText;
     public TextMeshProUGUI coinsText;
     public TextMeshProUGUI dayText;
+    public TextMeshProUGUI pseudoText;
+
+    [Header("Leaderboard")]
+    public LeaderboardUI leaderboardUI;
+    public GameObject pseudoPanel;
+    public TMP_InputField pseudoInput;
+    public Button pseudoConfirmButton;
 
     [Header("Animation")]
     public RectTransform logoRect;
@@ -46,6 +54,13 @@ public class MainMenu : MonoBehaviour
             continueButton.onClick.AddListener(OnContinueClicked);
         if (playButton != null)
             playButton.onClick.AddListener(OnPlayClicked);
+        if (leaderboardButton != null)
+            leaderboardButton.onClick.AddListener(OnLeaderboardClicked);
+        if (pseudoConfirmButton != null)
+            pseudoConfirmButton.onClick.AddListener(OnPseudoConfirmed);
+
+        if (pseudoPanel != null)
+            pseudoPanel.SetActive(false);
 
         // Affiche le menu au démarrage
         Show();
@@ -84,7 +99,7 @@ public class MainMenu : MonoBehaviour
         float delay = 0.4f;
         float interval = 0.1f;
 
-        Button[] buttons = { continueButton, playButton };
+        Button[] buttons = { continueButton, playButton, leaderboardButton };
         foreach (var btn in buttons)
         {
             if (btn != null && btn.gameObject.activeSelf)
@@ -114,8 +129,22 @@ public class MainMenu : MonoBehaviour
             dayText.text = config.dayName;
         }
 
-        // Vérifie si une partie est en cours
-        bool hasProgress = progress.totalGamesPlayed > 0 || progress.currentDay > 1;
+        // Affiche le pseudo si le joueur en a un
+        if (pseudoText != null)
+        {
+            if (LeaderboardManager.Instance != null && LeaderboardManager.Instance.HasPseudo())
+            {
+                pseudoText.text = "Connecté : " + LeaderboardManager.Instance.GetPseudo();
+                pseudoText.gameObject.SetActive(true);
+            }
+            else
+            {
+                pseudoText.gameObject.SetActive(false);
+            }
+        }
+
+        // Vérifie si le joueur a progressé au-delà du jour 1
+        bool hasProgress = progress.currentDay > 1;
 
         // Change le texte du bouton Continuer selon l'état
         if (continueButton != null)
@@ -162,7 +191,7 @@ public class MainMenu : MonoBehaviour
     void OnContinueClicked()
     {
         PlayerProgress progress = PlayerProgress.Instance;
-        bool hasProgress = progress.totalGamesPlayed > 0 || progress.currentDay > 1;
+        bool hasProgress = progress.currentDay > 1;
 
         if (hasProgress)
         {
@@ -211,5 +240,67 @@ public class MainMenu : MonoBehaviour
                 GameManager.Instance.RedemarrerPartie();
             }
         });
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // LEADERBOARD
+    // ═══════════════════════════════════════════════════════════
+
+    void OnLeaderboardClicked()
+    {
+        // Ferme le pseudoPanel s'il est ouvert
+        if (pseudoPanel != null && pseudoPanel.activeSelf)
+        {
+            pseudoPanel.SetActive(false);
+        }
+
+        // Demande un pseudo si le joueur n'en a pas encore
+        if (LeaderboardManager.Instance != null && !LeaderboardManager.Instance.HasPseudo())
+        {
+            ShowPseudoPanel();
+            return;
+        }
+
+        OuvrirLeaderboard();
+    }
+
+    void OuvrirLeaderboard()
+    {
+        if (leaderboardUI != null)
+        {
+            leaderboardUI.Ouvrir();
+        }
+    }
+
+    void ShowPseudoPanel()
+    {
+        if (pseudoPanel != null)
+        {
+            pseudoPanel.SetActive(true);
+            if (pseudoInput != null)
+                pseudoInput.text = "";
+        }
+    }
+
+    void OnPseudoConfirmed()
+    {
+        if (pseudoInput == null) return;
+
+        string pseudo = pseudoInput.text.Trim();
+        if (string.IsNullOrEmpty(pseudo)) return;
+
+        if (LeaderboardManager.Instance != null)
+        {
+            LeaderboardManager.Instance.SetPseudo(pseudo);
+        }
+
+        if (pseudoPanel != null)
+            pseudoPanel.SetActive(false);
+
+        // Met à jour l'affichage du pseudo dans le menu
+        UpdateUI();
+
+        // Ouvre le leaderboard après avoir défini le pseudo
+        OuvrirLeaderboard();
     }
 }

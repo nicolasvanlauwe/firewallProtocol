@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "594453047117",
+    "project_id": "firewallprotocol-d5a9a",
+    "storage_bucket": "firewallprotocol-d5a9a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:594453047117:android:e57f4a701173d557d73904",
+        "android_client_info": {
+          "package_name": "com.DefaultCompany.FirewallProject"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJbWEGQWO3XXzARKxVAFY0L3nCcS4Yvp4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

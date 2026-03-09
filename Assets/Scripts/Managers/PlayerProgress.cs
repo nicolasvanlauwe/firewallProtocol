@@ -31,6 +31,7 @@ public class PlayerProgress
     public int currentDay = 1;              // Jour actuel (niveau)
     public int highestDayReached = 1;       // Plus haut niveau atteint
     public int coins = 0;                   // Monnaie du joueur
+    public string pseudo = "";              // Pseudo du joueur (leaderboard)
 
     [Header("Statistiques globales")]
     public int totalEmailsProcessed = 0;    // Total d'emails traités

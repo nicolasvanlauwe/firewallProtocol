@@ -80,3 +80,11 @@ Thumbs.db
 # JetBrains Rider
 .idea/
 *.DotSettings.user
+
+# Firebase SDK (fichiers trop volumineux pour GitHub)
+Assets/Firebase/
+Assets/Plugins/iOS/
+Assets/Plugins/tvOS/
+Assets/Editor Default Resources/
+Assets/ExternalDependencyManager/
+Assets/StreamingAssets/
