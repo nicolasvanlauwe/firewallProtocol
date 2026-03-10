@@ -88,3 +88,15 @@ Assets/Plugins/tvOS/
 Assets/Editor Default Resources/
 Assets/ExternalDependencyManager/
 Assets/StreamingAssets/
+
+# Fichiers web inutiles pour Unity
+*.woff
+*.woff2
+*.svg
+
+# Démos et docs des asset packs
+Assets/JazzCreate/JazzCreateMultiUI/DemoScene/
+Assets/JazzCreate/JazzCreateMultiUI/DemoScripts/
+Assets/JazzCreate/JazzCreateMultiUI/Documentation/
+Assets/DEVNIK 2D/2D UI PIXEL BUTTONS/SCENES/
+Assets/DEVNIK 2D/2D UI PIXEL BUTTONS/README.txt
