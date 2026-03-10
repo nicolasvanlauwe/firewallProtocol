@@ -120,13 +120,25 @@ public class MainMenu : MonoBehaviour
         PlayerProgress progress = PlayerProgress.Instance;
         if (progress == null) return;
 
+        // Vérifie si le joueur a progressé au-delà du jour 1
+        bool hasProgress = progress.currentDay > 1;
+
+        // Affiche coins et jour seulement si partie en cours
         if (coinsText != null)
-            coinsText.text = progress.coins + " cryptos";
+        {
+            coinsText.gameObject.SetActive(hasProgress);
+            if (hasProgress)
+                coinsText.text = progress.coins + " cryptos";
+        }
 
         if (dayText != null)
         {
-            DayConfig config = PlayerProgress.GetDayConfig(progress.currentDay);
-            dayText.text = config.dayName;
+            dayText.gameObject.SetActive(hasProgress);
+            if (hasProgress)
+            {
+                DayConfig config = PlayerProgress.GetDayConfig(progress.currentDay);
+                dayText.text = config.dayName;
+            }
         }
 
         // Affiche le pseudo si le joueur en a un
@@ -142,9 +154,6 @@ public class MainMenu : MonoBehaviour
                 pseudoText.gameObject.SetActive(false);
             }
         }
-
-        // Vérifie si le joueur a progressé au-delà du jour 1
-        bool hasProgress = progress.currentDay > 1;
 
         // Change le texte du bouton Continuer selon l'état
         if (continueButton != null)
