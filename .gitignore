@@ -83,20 +83,38 @@ Thumbs.db
 
 # Firebase SDK (fichiers trop volumineux pour GitHub)
 Assets/Firebase/
+Assets/Firebase.meta
 Assets/Plugins/iOS/
+Assets/Plugins/iOS.meta
 Assets/Plugins/tvOS/
+Assets/Plugins/tvOS.meta
 Assets/Editor Default Resources/
+"Assets/Editor Default Resources.meta"
 Assets/ExternalDependencyManager/
+Assets/ExternalDependencyManager.meta
 Assets/StreamingAssets/
+Assets/StreamingAssets.meta
 
-# Fichiers web inutiles pour Unity
+# Fichiers web/inutiles pour Unity
 *.woff
 *.woff2
 *.svg
+*.otf
+
+# Fichiers web inutiles (meta orphelins)
+*.woff.meta
+*.woff2.meta
+*.svg.meta
+*.otf.meta
 
 # Démos et docs des asset packs
 Assets/JazzCreate/JazzCreateMultiUI/DemoScene/
+Assets/JazzCreate/JazzCreateMultiUI/DemoScene.meta
 Assets/JazzCreate/JazzCreateMultiUI/DemoScripts/
+Assets/JazzCreate/JazzCreateMultiUI/DemoScripts.meta
 Assets/JazzCreate/JazzCreateMultiUI/Documentation/
+Assets/JazzCreate/JazzCreateMultiUI/Documentation.meta
 Assets/DEVNIK 2D/2D UI PIXEL BUTTONS/SCENES/
+Assets/DEVNIK 2D/2D UI PIXEL BUTTONS/SCENES.meta
 Assets/DEVNIK 2D/2D UI PIXEL BUTTONS/README.txt
+Assets/DEVNIK 2D/2D UI PIXEL BUTTONS/README.txt.meta
