@@ -100,7 +100,14 @@ public class ShopUI : MonoBehaviour
             seq.Join(canvasGroup.DOFade(0f, animationDuration));
         }
 
-        seq.OnComplete(() => shopPanel.SetActive(false));
+        seq.OnComplete(() =>
+        {
+            shopPanel.SetActive(false);
+            if (MainMenu.Instance != null)
+                MainMenu.Instance.UpdateUI();
+            if (ApartmentScreen.Instance != null)
+                ApartmentScreen.Instance.UpdateUI();
+        });
     }
 
     /// <summary>
@@ -153,12 +160,18 @@ public class ShopUI : MonoBehaviour
     /// </summary>
     public void OnPurchase(string itemId)
     {
+        Debug.Log($"[Shop] OnPurchase appelé pour: {itemId} | ShopSystem={ShopSystem.Instance != null} | CanPurchase={ShopSystem.Instance?.CanPurchase(itemId)}");
         if (ShopSystem.Instance != null && ShopSystem.Instance.Purchase(itemId))
         {
+            Debug.Log($"[Shop] Achat réussi: {itemId} | Coins restants: {PlayerProgress.Instance.coins}");
             RefreshUI();
+            if (ApartmentScreen.Instance != null)
+                ApartmentScreen.Instance.UpdateUI();
             // Petit effet visuel
             if (coinsText != null)
             {
+                coinsText.rectTransform.DOKill();
+                coinsText.rectTransform.localScale = Vector3.one;
                 coinsText.rectTransform.DOPunchScale(Vector3.one * 0.2f, 0.3f);
             }
         }

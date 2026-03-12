@@ -166,6 +166,9 @@ public class ShopSystem : MonoBehaviour
         // Vérifie si déjà possédé (pour les non-consommables)
         if (!item.isConsumable && progress.HasItem(itemId)) return false;
 
+        // Bouclier : un seul à la fois
+        if (itemId == "shield" && progress.HasItem("shield_active")) return false;
+
         // Vérifie les prérequis
         if (!string.IsNullOrEmpty(item.requiredItem) && !progress.HasItem(item.requiredItem))
             return false;

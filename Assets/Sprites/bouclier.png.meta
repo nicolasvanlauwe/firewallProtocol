@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 1db490777110dac4882ca44ca6e6f1ff
+guid: e6313c1c8682b8d4798720e22fef9094
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2892250161890604103
-    second: xp_icon_mails_0
+      213: 2672517928110092168
+    second: bouclier_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: xp_icon_mails_0
+      name: bouclier_0
       rect:
         serializedVersion: 2
-        x: 114
-        y: 103
-        width: 1100
-        height: 1100
+        x: 87
+        y: 337
+        width: 600
+        height: 600
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9bbc1f23dc9acd7d0800000000000000
-      internalID: -2892250161890604103
+      spriteID: 88f6dd065e0b61520800000000000000
+      internalID: 2672517928110092168
       vertices: []
       indices: 
       edges: []
@@ -138,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: d3c04150cadb299459a069f48582cc0f
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      xp_icon_mails_0: -2892250161890604103
+      bouclier_0: 2672517928110092168
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -200,7 +200,7 @@ public class ApartmentScreen : MonoBehaviour
             doorZone.AnimateEntry(delay + 0.2f);
     }
 
-    void UpdateUI()
+    public void UpdateUI()
     {
         PlayerProgress progress = PlayerProgress.Instance;
 

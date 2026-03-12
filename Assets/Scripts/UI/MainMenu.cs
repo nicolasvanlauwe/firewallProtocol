@@ -115,7 +115,7 @@ public class MainMenu : MonoBehaviour
         }
     }
 
-    void UpdateUI()
+    public void UpdateUI()
     {
         PlayerProgress progress = PlayerProgress.Instance;
         if (progress == null) return;

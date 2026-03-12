@@ -57,6 +57,7 @@ public class ShopItemUI : MonoBehaviour
         PlayerProgress progress = PlayerProgress.Instance;
         bool canAfford = progress.coins >= item.price;
         bool alreadyOwned = !item.isConsumable && progress.HasItem(item.id);
+        bool shieldActive = item.id == "shield" && progress.HasItem("shield_active");
 
         // Couleur de fond
         if (backgroundImage != null)
@@ -75,18 +76,34 @@ public class ShopItemUI : MonoBehaviour
             }
         }
 
+        // Quantité possédée pour les consommables
+        int ownedCount = 0;
+        if (item.isConsumable)
+        {
+            switch (item.id)
+            {
+                case "extra_life": ownedCount = progress.extraLives; break;
+                case "hint": ownedCount = progress.hints; break;
+                case "skip": ownedCount = progress.skips; break;
+                case "shield": ownedCount = progress.HasItem("shield_active") ? 1 : 0; break;
+            }
+        }
+
         // État du bouton
         if (buyButton != null)
         {
-            buyButton.interactable = canAfford && !alreadyOwned;
+            buyButton.interactable = canAfford && !alreadyOwned && !shieldActive;
 
-            // Change le texte du bouton
             TextMeshProUGUI btnText = buyButton.GetComponentInChildren<TextMeshProUGUI>();
             if (btnText != null)
             {
                 if (alreadyOwned)
                 {
                     btnText.text = "Possédé";
+                }
+                else if (shieldActive)
+                {
+                    btnText.text = "Épuisé";
                 }
                 else if (canAfford)
                 {
@@ -99,6 +116,12 @@ public class ShopItemUI : MonoBehaviour
             }
         }
 
+        // Affiche la quantité pour les consommables
+        if (item.isConsumable && nameText != null)
+        {
+            nameText.text = item.name + " (x" + ownedCount + ")";
+        }
+
         // Prix en rouge si pas assez
         if (priceText != null)
         {
@@ -108,6 +131,7 @@ public class ShopItemUI : MonoBehaviour
 
     void OnBuyClicked()
     {
+        Debug.Log($"[Shop] Clic sur Acheter: {item?.id} | shopUI={shopUI != null}");
         if (shopUI != null && item != null)
         {
             shopUI.OnPurchase(item.id);

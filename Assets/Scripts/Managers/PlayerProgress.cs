@@ -219,10 +219,7 @@ public class PlayerProgress
         totalWrongAnswers += wrongAnswers;
         totalEmailsProcessed += correctAnswers + wrongAnswers;
 
-        if (score > bestScore)
-        {
-            bestScore = score;
-        }
+        bestScore += score;
 
         Save();
     }
@@ -237,10 +234,7 @@ public class PlayerProgress
         totalWrongAnswers += wrongAnswers;
         totalEmailsProcessed += correctAnswers + wrongAnswers;
 
-        if (score > bestScore)
-        {
-            bestScore = score;
-        }
+        bestScore += score;
 
         // Reset la série
         currentStreak = 0;
@@ -263,7 +257,10 @@ public class PlayerProgress
         }
         else
         {
-            currentStreak = 0;
+            if (!HasItem("streak_keeper"))
+            {
+                currentStreak = 0;
+            }
         }
     }
 
@@ -287,6 +284,14 @@ public class PlayerProgress
         if (!ownedItems.Contains(itemId))
         {
             ownedItems.Add(itemId);
+            Save();
+        }
+    }
+
+    public void RemoveItem(string itemId)
+    {
+        if (ownedItems.Remove(itemId))
+        {
             Save();
         }
     }
@@ -363,12 +368,14 @@ public class PlayerProgress
     }
 
     /// <summary>
-    /// Réinitialise toute la progression
+    /// Reset partiel : remet au jour 1 mais garde pseudo, stats, items
     /// </summary>
-    public void Reset()
+    public void ResetToDay1()
     {
-        _instance = new PlayerProgress();
-        _instance.Save();
+        currentDay = 1;
+        currentStreak = 0;
+        coins = 0;
+        Save();
     }
 }
 
