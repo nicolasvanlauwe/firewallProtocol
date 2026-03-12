@@ -76,6 +76,9 @@ public class MainMenu : MonoBehaviour
         menuPanel.SetActive(true);
         UpdateUI();
 
+        // Musique du menu
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayMenuMusic();
+
         // Animation d'entrée
         if (canvasGroup != null)
         {
@@ -208,6 +211,7 @@ public class MainMenu : MonoBehaviour
             Debug.Log("Continuer - Vers l'appartement");
             Hide(() =>
             {
+                if (AudioManager.Instance != null) AudioManager.Instance.PlayApartmentMusic();
                 if (ApartmentScreen.Instance != null)
                 {
                     ApartmentScreen.Instance.Open();

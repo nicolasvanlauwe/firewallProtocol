@@ -118,7 +118,7 @@ public class ShopUI : MonoBehaviour
         // Met à jour les coins
         if (coinsText != null)
         {
-            coinsText.text = PlayerProgress.Instance.coins.ToString();
+            coinsText.text = PlayerProgress.Instance.coins + " cryptos";
         }
 
         // Génère les items si le prefab existe
@@ -164,6 +164,7 @@ public class ShopUI : MonoBehaviour
         if (ShopSystem.Instance != null && ShopSystem.Instance.Purchase(itemId))
         {
             Debug.Log($"[Shop] Achat réussi: {itemId} | Coins restants: {PlayerProgress.Instance.coins}");
+            if (AudioManager.Instance != null) AudioManager.Instance.PlayBuy();
             RefreshUI();
             if (ApartmentScreen.Instance != null)
                 ApartmentScreen.Instance.UpdateUI();

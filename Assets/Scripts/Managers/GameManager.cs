@@ -100,6 +100,9 @@ public class GameManager : MonoBehaviour
             emailsATraiter = new List<EmailData>();
         }
 
+        // Musique de gameplay
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayGameplayMusic();
+
         // Affiche le premier email
         ChargerEmailSuivant();
         MettreAJourUI();
@@ -159,6 +162,9 @@ public class GameManager : MonoBehaviour
 
             Debug.Log($"[GameManager] Correct! +{email.pointsSiCorrect} pts, +{earnedCoins} coins (série: {PlayerProgress.Instance.currentStreak})");
 
+            // SFX bonne réponse
+            if (AudioManager.Instance != null) AudioManager.Instance.PlayCorrect();
+
             // Affiche la streak
             if (StreakUI.Instance != null)
                 StreakUI.Instance.ShowStreak(PlayerProgress.Instance.currentStreak);
@@ -175,7 +181,14 @@ public class GameManager : MonoBehaviour
         {
             // MAUVAISE RÉPONSE
             wrongAnswers++;
+            int streakAvant = PlayerProgress.Instance.currentStreak;
             PlayerProgress.Instance.UpdateStreak(false);
+
+            // SFX streak break si la série était active
+            if (streakAvant > 1 && PlayerProgress.Instance.currentStreak == 0)
+            {
+                if (AudioManager.Instance != null) AudioManager.Instance.PlayStreakBreak();
+            }
 
             // Cache la streak
             if (StreakUI.Instance != null)
@@ -185,13 +198,24 @@ public class GameManager : MonoBehaviour
             float damageMultiplier = ShopSystem.Instance != null ? ShopSystem.Instance.GetDamageMultiplier() : 1f;
 
             // Shield : réduit les dégâts de 50% et se consomme
+            bool shieldUsed = false;
             if (PlayerProgress.Instance.HasItem("shield_active"))
             {
                 damageMultiplier *= 0.5f;
                 PlayerProgress.Instance.RemoveItem("shield_active");
                 Debug.Log("[GameManager] Bouclier utilisé !");
+                shieldUsed = true;
                 if (ShieldBreakEffect.Instance != null)
                     ShieldBreakEffect.Instance.Play();
+            }
+
+            // SFX : shield break OU wrong (pas les deux)
+            if (AudioManager.Instance != null)
+            {
+                if (shieldUsed)
+                    AudioManager.Instance.PlayShieldBreak();
+                else
+                    AudioManager.Instance.PlayWrong();
             }
 
             int damage = Mathf.RoundToInt(email.degatsIntegrite * damageMultiplier);
@@ -271,6 +295,7 @@ public class GameManager : MonoBehaviour
 
         if (PlayerProgress.Instance.UseHint())
         {
+            if (AudioManager.Instance != null) AudioManager.Instance.PlayHint();
             EmailData email = emailsATraiter[emailActuelIndex];
             string hint = email.estFrauduleux ? "Cet email est FRAUDULEUX !" : "Cet email est LEGITIME.";
             Debug.Log($"[GameManager] Indice: {hint}");
@@ -295,6 +320,7 @@ public class GameManager : MonoBehaviour
 
         if (PlayerProgress.Instance.UseSkip())
         {
+            if (AudioManager.Instance != null) AudioManager.Instance.PlaySkip();
             Debug.Log("⏭️ Email passé");
             emailActuelIndex++;
             MettreAJourUI();
@@ -374,6 +400,8 @@ public class GameManager : MonoBehaviour
 
     void AfficherVictoire()
     {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayVictory();
+
         if (EffectsManager.Instance != null)
         {
             EffectsManager.Instance.PlayVictoryEffect();
@@ -397,6 +425,7 @@ public class GameManager : MonoBehaviour
     void GameOver()
     {
         Debug.Log($"💀 Game Over au jour {currentDay}");
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayGameOver();
 
         // Sauvegarde les coins gagnés avant la défaite
         PlayerProgress.Instance.AddCoins(coins);
@@ -527,6 +556,8 @@ public class GameManager : MonoBehaviour
     {
         NettoyerEtatJeu();
 
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayApartmentMusic();
+
         if (ApartmentScreen.Instance != null)
         {
             ApartmentScreen.Instance.gameObject.SetActive(true);
@@ -542,6 +573,7 @@ public class GameManager : MonoBehaviour
     public void RetourMenuSansReset()
     {
         NettoyerEtatJeu();
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayMenuMusic();
 
         if (MainMenu.Instance != null)
         {
@@ -559,6 +591,7 @@ public class GameManager : MonoBehaviour
     {
         PlayerProgress.Instance.ResetToDay1();
         NettoyerEtatJeu();
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayMenuMusic();
 
         if (MainMenu.Instance != null)
         {

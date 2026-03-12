@@ -19,6 +19,9 @@ public class PauseMenu : MonoBehaviour
     public Button continueButton;
     public Button menuButton;
 
+    [Header("Volume")]
+    public Slider volumeSlider;
+
     [Header("Animation")]
     public float animationDuration = 0.2f;
 
@@ -45,6 +48,13 @@ public class PauseMenu : MonoBehaviour
 
         if (menuButton != null)
             menuButton.onClick.AddListener(RetourMenu);
+
+        // Connecte le slider de volume
+        if (volumeSlider != null && AudioManager.Instance != null)
+        {
+            volumeSlider.value = AudioManager.Instance.musicVolume;
+            volumeSlider.onValueChanged.AddListener(AudioManager.Instance.OnVolumeChanged);
+        }
     }
 
     public void TogglePause()

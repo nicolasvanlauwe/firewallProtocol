@@ -147,6 +147,7 @@ public class EmailCardUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         {
             bool approuve = dragDelta.x > 0;
             Debug.Log(approuve ? "➡️ APPROUVÉ" : "⬅️ REJETÉ");
+            if (AudioManager.Instance != null) AudioManager.Instance.PlayEmailSwipe();
 
             // Informe le GameManager et récupère si c'était correct
             bool wasCorrect = GameManager.Instance.TraiterDecisionAvecRetour(approuve);

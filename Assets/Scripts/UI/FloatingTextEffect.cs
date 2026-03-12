@@ -26,9 +26,11 @@ public class FloatingTextEffect : MonoBehaviour
     [Header("Couleurs")]
     public Color scoreColor = new Color(0.2f, 1f, 0.4f);
     public Color damageColor = new Color(1f, 0.2f, 0.2f);
+    public Color outlineColor = Color.black;
+    public float outlineWidth = 0.35f;
 
     [Header("Animation")]
-    public float fontSize = 42f;
+    public float fontSize = 52f;
     public float floatDistance = 120f;
     public float duration = 1.2f;
 
@@ -116,6 +118,9 @@ public class FloatingTextEffect : MonoBehaviour
             tmp.alignment = TextAlignmentOptions.Center;
             tmp.raycastTarget = false;
             tmp.enableWordWrapping = false;
+            tmp.fontStyle = FontStyles.Bold;
+            tmp.outlineWidth = outlineWidth;
+            tmp.outlineColor = outlineColor;
 
             rootObj.SetActive(false);
 
@@ -151,13 +156,13 @@ public class FloatingTextEffect : MonoBehaviour
 
         RectTransform rect = entry.rect;
 
-        // Position aléatoire au centre de l'écran
+        // Position aléatoire sur tout l'écran
         RectTransform canvasRect = parentCanvas.GetComponent<RectTransform>();
         float canvasW = canvasRect.rect.width;
         float canvasH = canvasRect.rect.height;
 
-        float x = Random.Range(-canvasW * 0.4f, canvasW * 0.4f);
-        float y = Random.Range(-canvasH * 0.3f, canvasH * 0.25f);
+        float x = Random.Range(-canvasW * 0.45f, canvasW * 0.45f);
+        float y = Random.Range(-canvasH * 0.4f, canvasH * 0.3f);
         rect.anchoredPosition = new Vector2(x, y);
 
         // Setup texte

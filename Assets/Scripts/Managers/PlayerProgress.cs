@@ -375,6 +375,7 @@ public class PlayerProgress
         currentDay = 1;
         currentStreak = 0;
         coins = 0;
+        bestScore = 0;
         Save();
     }
 }
