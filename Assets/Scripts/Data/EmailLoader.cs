@@ -78,14 +78,6 @@ public class EmailLoader : MonoBehaviour
     }
 
     /// <summary>
-    /// Prépare une nouvelle partie basée sur le jour actuel.
-    /// </summary>
-    public List<EmailData> PrepareNewGame()
-    {
-        return PrepareGameForDay(PlayerProgress.Instance.currentDay);
-    }
-
-    /// <summary>
     /// Prépare une partie pour un jour spécifique.
     /// </summary>
     public List<EmailData> PrepareGameForDay(int day)
@@ -190,14 +182,6 @@ public class EmailLoader : MonoBehaviour
             shuffled[j] = temp;
         }
         return shuffled;
-    }
-
-    /// <summary>
-    /// Récupère tous les emails de la base de données.
-    /// </summary>
-    public List<EmailJSON> GetAllEmails()
-    {
-        return database?.emails ?? new List<EmailJSON>();
     }
 
     /// <summary>

@@ -79,6 +79,30 @@ public class LeaderboardManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Vérifie si un pseudo existe déjà dans Firebase.
+    /// </summary>
+    public void IsPseudoTaken(string pseudo, Action<bool> callback)
+    {
+        if (!isFirebaseReady)
+        {
+            callback?.Invoke(false);
+            return;
+        }
+
+        db.Collection(COLLECTION_NAME).Document(pseudo).GetSnapshotAsync()
+            .ContinueWithOnMainThread(task =>
+            {
+                if (task.IsFaulted)
+                {
+                    callback?.Invoke(false);
+                    return;
+                }
+
+                callback?.Invoke(task.Result.Exists);
+            });
+    }
+
+    /// <summary>
     /// Envoie le score au leaderboard si meilleur que l'ancien.
     /// </summary>
     public void SubmitScore(int score, int day)

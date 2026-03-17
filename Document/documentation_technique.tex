@@ -1,0 +1,558 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{tcolorbox}
+\usepackage{needspace}
+\usepackage{etoolbox}
+
+\geometry{margin=2.5cm}
+
+% Empecher les sauts de page dans les blocs de code et les tcolorbox
+\AtBeginEnvironment{lstlisting}{\par\needspace{6\baselineskip}}
+\AtBeginEnvironment{tcolorbox}{\par\needspace{10\baselineskip}}
+
+% Style du code
+\lstset{
+    language=[Sharp]C,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue}\bfseries,
+    stringstyle=\color{red},
+    commentstyle=\color{gray}\itshape,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    frame=single,
+    breaklines=true,
+    tabsize=4,
+    showstringspaces=false
+}
+
+% En-tête / pied de page
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Firewall Protocol}
+\fancyhead[R]{Documentation Technique}
+\fancyfoot[C]{\thepage}
+
+\titleformat{\section}{\Large\bfseries\color{blue!70!black}}{\thesection}{1em}{}
+\titleformat{\subsection}{\large\bfseries\color{blue!50!black}}{\thesubsection}{1em}{}
+
+\begin{document}
+
+% ============================================================
+% PAGE DE GARDE
+% ============================================================
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+{\Huge\bfseries Firewall Protocol\par}
+\vspace{1cm}
+{\Large Documentation Technique\par}
+\vspace{2cm}
+{\large Serious Game de sensibilisation au phishing\par}
+\vspace{1cm}
+{\large Développé avec Unity 6 (6000.3.3f1)\par}
+\vspace{0.5cm}
+{\large Plateforme cible : Android\par}
+\vspace{3cm}
+{\large\today\par}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% ============================================================
+% 1. PRÉSENTATION DU PROJET
+% ============================================================
+\section{Présentation du projet}
+
+\subsection{Concept}
+\textbf{Firewall Protocol} est un serious game mobile développé sous Unity, dont l'objectif est de sensibiliser les joueurs à la détection du phishing. Le joueur incarne un employé qui doit trier des emails en les approuvant ou rejetant via un système de swipe (glisser gauche/droite).
+
+\subsection{Objectifs pédagogiques}
+\begin{itemize}
+    \item Apprendre à identifier les emails frauduleux (phishing)
+    \item Reconnaître les indices visuels et textuels d'une tentative de phishing
+    \item Développer un réflexe critique face aux emails suspects
+    \item Sensibiliser un large public (tous âges) aux risques du phishing
+\end{itemize}
+
+\subsection{Technologies utilisées}
+\begin{longtable}{|l|l|}
+\hline
+\textbf{Technologie} & \textbf{Usage} \\
+\hline
+Unity 6 (6000.3.3f1) & Moteur de jeu \\
+\hline
+C\# & Langage de programmation \\
+\hline
+Firebase Firestore & Base de données en ligne (classement) \\
+\hline
+Firebase Auth & Authentification anonyme \\
+\hline
+DOTween & Bibliothèque d'animations \\
+\hline
+TextMeshPro & Rendu de texte avancé \\
+\hline
+JSON & Format de stockage des emails \\
+\hline
+PlayerPrefs & Sauvegarde locale de la progression \\
+\hline
+\end{longtable}
+
+% ============================================================
+% 2. ARCHITECTURE DU PROJET
+% ============================================================
+\section{Architecture du projet}
+
+\subsection{Organisation des fichiers}
+Le projet suit une architecture modulaire avec séparation des responsabilités :
+
+\begin{verbatim}
+Assets/
++-- Scripts/
+|   +-- Managers/          # Logique centrale
+|   |   +-- GameManager.cs
+|   |   +-- AudioManager.cs
+|   |   +-- PlayerProgress.cs
+|   |   +-- LeaderboardManager.cs
+|   |   +-- EffectsManager.cs
+|   |   +-- ShopSystem.cs
+|   +-- Data/              # Modeles de donnees
+|   |   +-- EmailData.cs
+|   |   +-- EmailJSON.cs
+|   |   +-- EmailLoader.cs
+|   |   +-- LeaderboardEntry.cs
+|   +-- UI/                # Interface utilisateur
+|   |   +-- MainMenu.cs
+|   |   +-- EmailCardUI.cs
+|   |   +-- ShopUI.cs
+|   |   +-- LeaderboardUI.cs
+|   |   +-- PauseMenu.cs
+|   |   +-- LoadingScreen.cs
+|   |   +-- FeedbackPopup.cs
+|   |   +-- StreakUI.cs
+|   |   +-- PowerUpBarUI.cs
+|   |   +-- EndScreenAnimator.cs
+|   +-- Environment/       # Elements du decor
+|       +-- ApartmentScreen.cs
+|       +-- ApartmentZone.cs
++-- Audio/
+|   +-- Music/             # Musiques de fond
+|   +-- SFX/               # Effets sonores
++-- Sprites/               # Images et sprites
++-- Resources/
+|   +-- emails.json        # Base de donnees des emails
++-- Scenes/
+    +-- SampleScene.unity  # Scene principale
+\end{verbatim}
+
+\subsection{Design Patterns utilisés}
+
+\subsubsection{Singleton}
+La plupart des managers utilisent le pattern Singleton pour garantir une instance unique accessible globalement :
+
+\begin{lstlisting}
+public static GameManager Instance;
+
+void Awake()
+{
+    if (Instance == null)
+        Instance = this;
+    else
+        Destroy(gameObject);
+}
+\end{lstlisting}
+
+Classes utilisant ce pattern : \texttt{GameManager}, \texttt{AudioManager}, \texttt{PlayerProgress}, \texttt{LeaderboardManager}, \texttt{EffectsManager}, \texttt{MainMenu}, \texttt{EmailLoader}.
+
+\subsubsection{Observer (callbacks)}
+La communication avec Firebase utilise des callbacks asynchrones :
+
+\needspace{15\baselineskip}
+\begin{lstlisting}
+public void GetTopScores(int limit, Action<List<LeaderboardEntry>> callback)
+{
+    db.Collection(COLLECTION_NAME)
+        .OrderByDescending("bestScore")
+        .Limit(limit)
+        .GetSnapshotAsync()
+        .ContinueWithOnMainThread(task =>
+        {
+            // ... traitement ...
+            callback?.Invoke(entries);
+        });
+}
+\end{lstlisting}
+
+% ============================================================
+% 3. SCRIPTS PRINCIPAUX
+% ============================================================
+\section{Scripts principaux}
+
+\subsection{GameManager.cs — Logique de jeu}
+
+Le \texttt{GameManager} est le chef d'orchestre du jeu. Il gère :
+
+\begin{itemize}
+    \item L'initialisation des parties (chargement des emails selon le jour)
+    \item Le traitement des décisions du joueur (approuver/rejeter un email)
+    \item Le calcul du score, des coins et de l'intégrité
+    \item La gestion des power-ups (bouclier, indice, skip)
+    \item Les conditions de victoire et de game over
+    \item La navigation entre les écrans (appartement, menu)
+\end{itemize}
+
+\begin{tcolorbox}[title=Flux de jeu principal]
+\begin{enumerate}
+    \item \texttt{InitialiserPartie()} : charge les emails du jour, initialise les stats
+    \item \texttt{ChargerEmailSuivant()} : affiche l'email suivant
+    \item \texttt{TraiterDecisionAvecRetour()} : évalue la réponse du joueur
+    \item Si correct : +score, +coins, +streak, email suivant
+    \item Si incorrect : -intégrité, feedback explicatif, vérification game over
+    \item \texttt{FinDeJournee()} : calcul des bonus, sauvegarde, soumission au leaderboard
+\end{enumerate}
+\end{tcolorbox}
+
+\subsubsection{Gestion du bouclier}
+Quand le joueur se trompe et possède un bouclier actif, les dégâts sont réduits de 50\% et le bouclier est consommé. Le SFX joué est celui du shield break (et non le SFX d'erreur classique) pour éviter la superposition de sons :
+
+\needspace{6\baselineskip}
+\begin{lstlisting}
+if (shieldUsed)
+    AudioManager.Instance.PlayShieldBreak();
+else
+    AudioManager.Instance.PlayWrong();
+\end{lstlisting}
+
+\subsection{PlayerProgress.cs — Progression et sauvegarde}
+
+Gère toute la progression du joueur avec sauvegarde automatique via \texttt{PlayerPrefs} au format JSON.
+
+\begin{itemize}
+    \item \textbf{Progression} : jour actuel, plus haut jour atteint, coins
+    \item \textbf{Statistiques} : emails traités, bonnes/mauvaises réponses, parties jouées
+    \item \textbf{Boutique} : items possédés, vies, indices, skips
+    \item \textbf{Streak} : série de bonnes réponses consécutives
+\end{itemize}
+
+\subsubsection{Système de niveaux (DayConfig)}
+Chaque jour a une configuration dynamique calculée par \texttt{GetDayConfig(int day)} :
+
+\begin{longtable}{|l|l|l|l|}
+\hline
+\textbf{Jours} & \textbf{Emails} & \textbf{Intégrité} & \textbf{Répartition} \\
+\hline
+1--2 & 6--7 & 100\% & 100\% facile \\
+\hline
+3--4 & 8--9 & 90--95\% & 60\% facile, 40\% moyen \\
+\hline
+5--6 & 10--11 & 80--85\% & 30\% facile, 50\% moyen, 20\% difficile \\
+\hline
+7--8 & 12--13 & 70--75\% & 10\% facile, 40\% moyen, 40\% difficile, 10\% expert \\
+\hline
+9+ & 14--15 & 60\% & 5\% facile, 25\% moyen, 40\% difficile, 30\% expert \\
+\hline
+\end{longtable}
+
+Le multiplicateur de récompense augmente de 20\% par jour ($1\times$, $1.2\times$, $1.4\times$...).
+
+\subsection{EmailLoader.cs — Chargement des emails}
+
+Charge la base de données d'emails depuis un fichier JSON dans \texttt{Resources/}. Sélectionne les emails pour chaque journée selon la difficulté configurée, en utilisant l'algorithme de mélange Fisher-Yates.
+
+\begin{tcolorbox}[title=Processus de sélection des emails]
+\begin{enumerate}
+    \item Récupère la configuration du jour (\texttt{DayConfig})
+    \item Filtre les emails par difficulté (facile, moyen, difficile, expert)
+    \item Mélange chaque groupe aléatoirement
+    \item Sélectionne le nombre requis de chaque difficulté
+    \item Mélange final pour éviter le regroupement par difficulté
+\end{enumerate}
+\end{tcolorbox}
+
+\subsection{AudioManager.cs — Gestion audio}
+
+Singleton gérant la musique de fond et les effets sonores avec deux \texttt{AudioSource} séparés.
+
+\begin{itemize}
+    \item \textbf{Musiques} : menu, gameplay, appartement — avec crossfade via DOTween
+    \item \textbf{SFX} : bonne/mauvaise réponse, shield break, streak break, swipe, achat, victoire, game over
+    \item \textbf{Volume} : contrôle via slider dans le menu pause, sauvegardé dans PlayerPrefs
+    \item \textbf{Mute} : toggle avec changement d'icône (on/off)
+\end{itemize}
+
+Certains SFX ont des multiplicateurs de volume personnalisés :
+\begin{itemize}
+    \item Swipe email : $\times 4$ (pour être audible pendant le gameplay)
+    \item Shield break : $\times 3$ (pour se démarquer)
+    \item Streak break : $\times 7$ (pour l'impact)
+    \item Skip : $\times 100$ avec pitch $\times 3$ (effet accéléré)
+\end{itemize}
+
+Le crossfade entre musiques utilise DOTween :
+\needspace{10\baselineskip}
+\begin{lstlisting}
+musicSource.DOFade(0f, musicFadeDuration).OnComplete(() =>
+{
+    musicSource.clip = clip;
+    musicSource.loop = true;
+    musicSource.Play();
+    musicSource.DOFade(isMuted ? 0f : musicVolume, musicFadeDuration);
+});
+\end{lstlisting}
+
+\subsection{LeaderboardManager.cs — Classement en ligne}
+
+Gère la communication avec Firebase Firestore pour le classement.
+
+\begin{itemize}
+    \item \textbf{SubmitScore()} : envoie le score si meilleur que l'existant
+    \item \textbf{GetTopScores()} : récupère le top 8 trié par score décroissant
+    \item \textbf{GetPlayerRank()} : calcule le rang du joueur
+    \item \textbf{IsPseudoTaken()} : vérifie l'unicité du pseudo avant inscription
+\end{itemize}
+
+Structure d'un document Firestore :
+\needspace{8\baselineskip}
+\begin{verbatim}
+leaderboard/{pseudo}
++-- pseudo: string
++-- bestScore: int
++-- highestDay: int
++-- timestamp: ServerTimestamp
+\end{verbatim}
+
+\subsection{LoadingScreen.cs — Écran de chargement}
+
+Affiche un écran de chargement animé au lancement du jeu :
+\begin{itemize}
+    \item Fond noir avec la boîte aux lettres au centre
+    \item Enveloppes animées qui tombent vers la boîte (spawn en boucle avec DOTween)
+    \item Texte "Chargement..." avec animation des points
+    \item Disparition en fade-out après un temps minimum (3 secondes)
+    \item La musique du menu ne démarre qu'après la fin du chargement
+\end{itemize}
+
+% ============================================================
+% 4. INTERFACE UTILISATEUR
+% ============================================================
+\section{Interface utilisateur}
+
+\subsection{Navigation entre les écrans}
+
+\needspace{10\baselineskip}
+\noindent
+\begin{minipage}{\textwidth}
+\begin{verbatim}
+Loading Screen --> Menu Principal --> Appartement --> Gameplay
+                        |                 |              |
+                        |                 |       Victoire/Game Over
+                        |                 |              |
+                        +-----------------+--------------+
+                        (retour au menu ou a l'appartement)
+\end{verbatim}
+\end{minipage}
+
+\subsection{MainMenu.cs — Menu principal}
+\begin{itemize}
+    \item Affiche le pseudo connecté, le jour actuel et les cryptos
+    \item Bouton "Continuer" : reprend la partie (→ appartement)
+    \item Bouton "Nouvelle partie" / "Recommencer" : repart du jour 1
+    \item Bouton "Classement" : ouvre le leaderboard (demande un pseudo si pas encore défini)
+    \item Vérification de l'unicité du pseudo via Firebase avant validation
+    \item Animations d'entrée : fade-in du canvas, scale du logo, apparition séquentielle des boutons
+\end{itemize}
+
+\subsection{EmailCardUI.cs — Carte email}
+Interface de swipe pour approuver/rejeter les emails. Le joueur glisse la carte à gauche (rejeter) ou à droite (approuver). Un seuil de distance est nécessaire pour valider l'action.
+
+\subsection{ShopUI.cs — Boutique}
+Permet d'acheter des power-ups avec les cryptos gagnés :
+\begin{itemize}
+    \item Bouclier : réduit les dégâts de 50\% (consommable)
+    \item Indice : révèle si l'email est frauduleux ou légitime
+    \item Skip : passe un email sans pénalité
+    \item Vie supplémentaire : restaure 25\% d'intégrité en cas de game over
+\end{itemize}
+
+\subsection{LeaderboardUI.cs — Classement}
+Affiche le top 8 des joueurs avec pseudo, score et jour maximum. Le texte "Chargement..." s'affiche pendant la requête Firebase. Le rang du joueur est affiché en haut du panneau.
+
+\subsection{PauseMenu.cs — Menu pause}
+\begin{itemize}
+    \item Bouton reprendre (ferme le menu)
+    \item Bouton mute (toggle son on/off avec changement d'icône)
+    \item Bouton quitter
+    \item Slider de volume connecté à l'AudioManager
+\end{itemize}
+
+% ============================================================
+% 5. EFFETS VISUELS ET SONORES
+% ============================================================
+\section{Effets visuels et sonores}
+
+\subsection{Effets visuels}
+\begin{itemize}
+    \item \textbf{GlitchEffect} : effet de glitch visuel sur mauvaise réponse (probabilité 40\%) et game over (version intense)
+    \item \textbf{ConfettiEffect} : confettis sur victoire
+    \item \textbf{ShieldBreakEffect} : animation visuelle de destruction du bouclier
+    \item \textbf{FloatingTextEffect} : texte flottant "+score" ou "-dégâts"
+    \item \textbf{StreakUI} : affichage de la série de bonnes réponses
+    \item \textbf{EndScreenAnimator} : animation des écrans de fin (victoire/game over)
+\end{itemize}
+
+\subsection{Musiques}
+Trois ambiances musicales avec transitions en crossfade :
+\begin{itemize}
+    \item Menu principal : ambiance calme d'accueil
+    \item Gameplay : musique dynamique pendant le tri des emails
+    \item Appartement : ambiance détendue entre les journées
+\end{itemize}
+
+\subsection{Effets sonores}
+\begin{longtable}{|l|l|}
+\hline
+\textbf{Événement} & \textbf{SFX} \\
+\hline
+Bonne réponse & Validation positive \\
+\hline
+Mauvaise réponse & Buzzer d'erreur \\
+\hline
+Shield break & Son de bouclier brisé \\
+\hline
+Streak break & Son de série perdue (volume $\times 7$) \\
+\hline
+Swipe email & Son de glissement (volume $\times 4$) \\
+\hline
+Achat boutique & Son de caisse \\
+\hline
+Victoire & Fanfare \\
+\hline
+Game over & Son de défaite \\
+\hline
+\end{longtable}
+
+% ============================================================
+% 6. DONNÉES
+% ============================================================
+\section{Données}
+
+\subsection{Structure d'un email (EmailData)}
+\needspace{14\baselineskip}
+\begin{lstlisting}
+public class EmailData
+{
+    public string expediteurNom;      // Nom de l'expéditeur
+    public string expediteurEmail;    // Adresse email
+    public string objet;             // Objet du mail
+    public string corpsDuMessage;    // Corps du message
+    public bool estFrauduleux;       // Phishing ou non
+    public string explicationErreur; // Explication pedagogique
+    public int pointsSiCorrect;      // Points gagnes
+    public int degatsIntegrite;      // Degats si erreur
+}
+\end{lstlisting}
+
+\subsection{Fichier JSON (emails.json)}
+Les emails sont stockés dans \texttt{Resources/emails.json} avec 4 niveaux de difficulté :
+\begin{itemize}
+    \item \textbf{Facile} : indices évidents (fautes grossières, adresses suspectes)
+    \item \textbf{Moyen} : indices plus subtils (urgence artificielle, liens trompeurs)
+    \item \textbf{Difficile} : très réaliste, peu d'indices
+    \item \textbf{Expert} : quasiment indiscernable d'un vrai email
+\end{itemize}
+
+\subsection{Sauvegarde locale (PlayerPrefs)}
+La progression est sérialisée en JSON et stockée via \texttt{PlayerPrefs} :
+\begin{itemize}
+    \item Clé \texttt{PlayerProgress} : toutes les données de progression
+    \item Clé \texttt{MusicVolume} / \texttt{SfxVolume} : volumes audio
+    \item Clé \texttt{IsMuted} : état du mute
+    \item Clé \texttt{PlayerPseudo} : pseudo du joueur
+\end{itemize}
+
+% ============================================================
+% 7. DÉPLOIEMENT
+% ============================================================
+\section{Déploiement}
+
+\subsection{Build Android}
+\begin{itemize}
+    \item Plateforme : Android (APK)
+    \item Target API Level : 33+ (Android 13)
+    \item Minimum API Level : 22 (Android 5.1)
+    \item Rendering : Universal Render Pipeline (URP)
+    \item Canvas Scaler : Scale With Screen Size, référence 1080×1920, match 0.5
+\end{itemize}
+
+\subsection{Prérequis}
+\begin{itemize}
+    \item Unity 6 avec module Android Build Support
+    \item Android SDK \& NDK Tools
+    \item OpenJDK (installé avec Unity)
+    \item Compte Google Play (25\$ one-time) pour la distribution
+\end{itemize}
+
+\subsection{Évolutions prévues}
+\begin{itemize}
+    \item Migration de la base d'emails sur Firebase pour mise à jour en temps réel sans republier l'APK
+    \item Ajout de nouveaux emails basés sur les arnaques actuelles
+    \item Version B2B avec emails personnalisables par entreprise
+\end{itemize}
+
+% ============================================================
+% 8. DIAGRAMME DE CLASSES SIMPLIFIÉ
+% ============================================================
+\section{Diagramme de classes simplifié}
+
+\needspace{30\baselineskip}
+\begin{verbatim}
++-------------------+     +------------------+
+|   GameManager     |---->|  EmailLoader     |
+|                   |     |  - emails.json   |
+| - integrite       |     +------------------+
+| - score           |
+| - coins           |     +------------------+
+|                   |---->| PlayerProgress   |
+| TraiterDecision() |     | - currentDay     |
+| FinDeJournee()    |     | - coins          |
+| GameOver()        |     | - ownedItems     |
++-------------------+     | Save() / Load()  |
+        |                  +------------------+
+        |
+        v                  +------------------+
++-------------------+     |  AudioManager    |
+|   EmailCardUI     |     | - musicSource    |
+|                   |     | - sfxSource      |
+| Swipe gauche/     |     | PlayMusic()      |
+| droite            |     | PlaySfx()        |
++-------------------+     +------------------+
+
++-------------------+     +------------------+
+| LeaderboardMgr    |---->|  Firebase        |
+|                   |     |  Firestore       |
+| SubmitScore()     |     +------------------+
+| GetTopScores()    |
+| IsPseudoTaken()   |     +------------------+
++-------------------+     |   ShopSystem     |
+                          | - items[]        |
++-------------------+     | Purchase()       |
+|  EffectsManager   |     +------------------+
+| - GlitchEffect    |
+| - ConfettiEffect  |
+| - ShieldBreak     |
++-------------------+
+\end{verbatim}
+
+\end{document}

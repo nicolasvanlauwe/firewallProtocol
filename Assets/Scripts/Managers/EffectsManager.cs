@@ -127,17 +127,6 @@ public class EffectsManager : MonoBehaviour
     // ═══════════════════════════════════════════════════════════
 
     /// <summary>
-    /// Anime un élément avec un bounce
-    /// </summary>
-    public void AnimateBounce(RectTransform element)
-    {
-        if (element == null) return;
-        
-        element.localScale = Vector3.zero;
-        element.DOScale(1f, 0.4f).SetEase(Ease.OutBack);
-    }
-
-    /// <summary>
     /// Reset tous les effets
     /// </summary>
     public void ResetAllEffects()

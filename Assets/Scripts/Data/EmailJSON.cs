@@ -55,40 +55,6 @@ public class EmailDatabase
     }
     
     /// <summary>
-    /// Sauvegarde la base de données en JSON
-    /// </summary>
-    public string ToJSON()
-    {
-        return JsonUtility.ToJson(this, true);
-    }
-    
-    /// <summary>
-    /// Récupère des emails aléatoires selon la difficulté
-    /// </summary>
-    public List<EmailJSON> GetRandomEmails(int count, string difficulte = null)
-    {
-        List<EmailJSON> filtered = emails;
-        
-        // Filtre par difficulté si spécifiée
-        if (!string.IsNullOrEmpty(difficulte))
-        {
-            filtered = emails.FindAll(e => e.difficulte == difficulte);
-        }
-        
-        // Mélange et prend les N premiers
-        List<EmailJSON> shuffled = new List<EmailJSON>(filtered);
-        for (int i = shuffled.Count - 1; i > 0; i--)
-        {
-            int j = UnityEngine.Random.Range(0, i + 1);
-            EmailJSON temp = shuffled[i];
-            shuffled[i] = shuffled[j];
-            shuffled[j] = temp;
-        }
-        
-        return shuffled.GetRange(0, Mathf.Min(count, shuffled.Count));
-    }
-    
-    /// <summary>
     /// Récupère des emails par difficulté
     /// </summary>
     public List<EmailJSON> GetEmailsByDifficulty(string difficulte)

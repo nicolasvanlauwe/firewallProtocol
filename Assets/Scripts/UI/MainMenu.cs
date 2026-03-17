@@ -30,6 +30,7 @@ public class MainMenu : MonoBehaviour
     public GameObject pseudoPanel;
     public TMP_InputField pseudoInput;
     public Button pseudoConfirmButton;
+    public TextMeshProUGUI pseudoErrorText;
 
     [Header("Animation")]
     public RectTransform logoRect;
@@ -76,8 +77,9 @@ public class MainMenu : MonoBehaviour
         menuPanel.SetActive(true);
         UpdateUI();
 
-        // Musique du menu
-        if (AudioManager.Instance != null) AudioManager.Instance.PlayMenuMusic();
+        // Musique du menu (pas pendant le loading screen)
+        if (AudioManager.Instance != null && (LoadingScreen.Instance == null || !LoadingScreen.Instance.IsLoading()))
+            AudioManager.Instance.PlayMenuMusic();
 
         // Animation d'entrée
         if (canvasGroup != null)
@@ -302,18 +304,37 @@ public class MainMenu : MonoBehaviour
         string pseudo = pseudoInput.text.Trim();
         if (string.IsNullOrEmpty(pseudo)) return;
 
+        // Désactive le bouton pendant la vérification
+        if (pseudoConfirmButton != null)
+            pseudoConfirmButton.interactable = false;
+
+        if (pseudoErrorText != null)
+            pseudoErrorText.text = "";
+
         if (LeaderboardManager.Instance != null)
         {
-            LeaderboardManager.Instance.SetPseudo(pseudo);
+            LeaderboardManager.Instance.IsPseudoTaken(pseudo, (isTaken) =>
+            {
+                if (pseudoConfirmButton != null)
+                    pseudoConfirmButton.interactable = true;
+
+                if (isTaken)
+                {
+                    // Pseudo déjà pris
+                    if (pseudoErrorText != null)
+                        pseudoErrorText.text = "Ce pseudo est déjà pris !";
+                    return;
+                }
+
+                // Pseudo disponible
+                LeaderboardManager.Instance.SetPseudo(pseudo);
+
+                if (pseudoPanel != null)
+                    pseudoPanel.SetActive(false);
+
+                UpdateUI();
+                OuvrirLeaderboard();
+            });
         }
-
-        if (pseudoPanel != null)
-            pseudoPanel.SetActive(false);
-
-        // Met à jour l'affichage du pseudo dans le menu
-        UpdateUI();
-
-        // Ouvre le leaderboard après avoir défini le pseudo
-        OuvrirLeaderboard();
     }
 }

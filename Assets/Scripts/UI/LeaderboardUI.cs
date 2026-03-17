@@ -106,6 +106,10 @@ public class LeaderboardUI : MonoBehaviour
         if (loadingIndicator != null)
             loadingIndicator.SetActive(true);
 
+        // Affiche "Chargement..." pendant la requête Firebase
+        if (playerRankText != null)
+            playerRankText.text = "Chargement...";
+
         foreach (GameObject entry in spawnedEntries)
         {
             Destroy(entry);

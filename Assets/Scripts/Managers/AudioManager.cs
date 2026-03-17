@@ -65,8 +65,7 @@ public class AudioManager : MonoBehaviour
     public Sprite muteOffSprite;
 
     private bool isMuted = false;
-    private float savedMusicVolume;
-    private float savedSfxVolume;
+
 
     private const string MUSIC_VOL_KEY = "MusicVolume";
     private const string SFX_VOL_KEY = "SfxVolume";
@@ -175,10 +174,10 @@ public class AudioManager : MonoBehaviour
     // Raccourcis pour les SFX courants
     public void PlayCorrect() => PlaySfx(correctSfx);
     public void PlayWrong() => PlaySfx(wrongSfx);
-    public void PlayStreakUp() => PlaySfx(streakUpSfx);
-    public void PlayStreakBreak() { if (sfxSource != null && streakBreakSfx != null) sfxSource.PlayOneShot(streakBreakSfx, sfxVolume * 7f); }
+
+    public void PlayStreakBreak() { if (sfxSource != null && streakBreakSfx != null) sfxSource.PlayOneShot(streakBreakSfx, sfxVolume * 4f); }
     public void PlayShieldActive() => PlaySfx(shieldActiveSfx);
-    public void PlayShieldBreak() { if (sfxSource != null && shieldBreakSfx != null) sfxSource.PlayOneShot(shieldBreakSfx, sfxVolume * 3f); }
+    public void PlayShieldBreak() { if (sfxSource != null && shieldBreakSfx != null) sfxSource.PlayOneShot(shieldBreakSfx, sfxVolume * 4f); }
     public void PlayHint() => PlaySfx(hintSfx);
     public void PlaySkip()
     {
@@ -191,10 +190,6 @@ public class AudioManager : MonoBehaviour
     }
     void ResetSfxPitch() { if (sfxSource != null) sfxSource.pitch = 1f; }
     public void PlayBuy() => PlaySfx(buySfx);
-    public void PlayCantBuy() => PlaySfx(cantBuySfx);
-    public void PlayButtonClick() => PlaySfx(buttonClickSfx);
-    public void PlayPanelOpen() => PlaySfx(panelOpenSfx);
-    public void PlayPanelClose() => PlaySfx(panelCloseSfx);
     public void PlayGameOver() => PlaySfx(gameOverSfx);
     public void PlayVictory() => PlaySfx(victorySfx);
     public void PlayConfetti() => PlaySfx(confettiSfx);
@@ -214,20 +209,6 @@ public class AudioManager : MonoBehaviour
         if (sfxSource != null) sfxSource.volume = sfxVolume;
 
         PlayerPrefs.SetFloat(MUSIC_VOL_KEY, musicVolume);
-        PlayerPrefs.SetFloat(SFX_VOL_KEY, sfxVolume);
-    }
-
-    public void SetMusicVolume(float value)
-    {
-        musicVolume = Mathf.Clamp01(value);
-        if (musicSource != null) musicSource.volume = musicVolume;
-        PlayerPrefs.SetFloat(MUSIC_VOL_KEY, musicVolume);
-    }
-
-    public void SetSfxVolume(float value)
-    {
-        sfxVolume = Mathf.Clamp01(value);
-        if (sfxSource != null) sfxSource.volume = sfxVolume;
         PlayerPrefs.SetFloat(SFX_VOL_KEY, sfxVolume);
     }
 
